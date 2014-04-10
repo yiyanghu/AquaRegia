@@ -1,27 +1,40 @@
 package org.aquaregia.ui;
 
+import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
+
+import org.aquaregia.wallet.ARWallet;
+
 import com.google.bitcoin.core.DownloadListener;
+import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.WalletEventListener;
+import com.google.bitcoin.script.Script;
 
+/**
+ * Binds wallet implementation to interface
+ * @author Stephen Halm
+ */
 public class Controller {
+
+	private ARWallet mwallet;
+	private WalletView view;
 	
-	/**
-	 * Returns new blockchain download listener that updates UI on progress
-	 */
-    public class UIDownloadListener extends DownloadListener {
-        @Override
-        protected void progress(double pct, int blocksSoFar, Date date) {
-            super.progress(pct, blocksSoFar, date);
-            // TODO:  update progress bar UI element with new percentage
-            // ensure bar is unhidden?
+	// Add Listener handlers here (with implements on this object)
+	// also make calls to ARWallet based on such events from here
 
-        }
+	public void addModel(ARWallet mwallet) {
+		this.mwallet = mwallet;
+	}
 
-        @Override
-        protected void doneDownload() {
-            super.doneDownload();
-            // TODO: show download is done (maybe hide progress bar)
-        }
-    }
+	public void addView(WalletView view) {
+		this.view = view;
+	}
+
+	public void initModel(Object initParam) {
+		return;
+	}
 
 }
