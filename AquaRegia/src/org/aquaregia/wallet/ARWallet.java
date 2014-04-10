@@ -1,14 +1,13 @@
 package org.aquaregia.wallet;
 
+import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
-import org.aquaregia.ui.Controller;
 import org.aquaregia.ui.WalletView;
-
-import java.io.File;
-import java.math.BigInteger;
+import org.aquaregia.ui.Strings;
 
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
@@ -18,7 +17,6 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
-import com.google.bitcoin.kits.WalletAppKit;
 
 
 public class ARWallet extends Observable {
@@ -27,35 +25,40 @@ public class ARWallet extends Observable {
 	public static final String WALLET_DEFAULT = "default";
 	
 	// make the wallet work on main Bitcoin network
-	NetworkParameters params = MainNetParams.get();
-	Wallet wallet;
-	WalletAppKit walletGen;
+	private NetworkParameters params = MainNetParams.get();
+	private Wallet wallet;
+	private WalletInitializer walletGen;
 	
 	public ARWallet() {
-		this(WALLET_DEFAULT);
+		initWallet(WALLET_DEFAULT);
 	}
 	
 	public ARWallet(String walletName) {
+		initWallet(walletName);
+	}
+	
+	void initWallet(String walletName) {
 		assert(walletName != null);
 		walletGen = new WalletInitializer(params, new File("."),  walletName);
 		
-		walletGen.setDownloadListener(null);
-/*
- *         bitcoin.setDownloadListener(controller.progressBarUpdater())
-               .setBlockingStartup(false)
-               .setUserAgent(APP_NAME, "1.0");
-        bitcoin.startAsync();
-        bitcoin.awaitRunning();
-        // Don't make the user wait for confirmations for now, as the intention is they're sending it their own money!
-        bitcoin.wallet().allowSpendingUnconfirmedTransactions();
-        bitcoin.peerGroup().setMaxConnections(11);
-        System.out.println(bitcoin.wallet());
-        controller.onBitcoinSetup();
-        mainWindow.show();
- */
+		// configure wallet service
+		walletGen.setDownloadListener(new UIDownloadListener())
+			.setBlockingStartup(false)
+			.setUserAgent(Strings.appname, Strings.appversion);
+		// and launch
+		walletGen.startAsync();
+		walletGen.awaitRunning();
 		
+		// post configuration
+		walletGen.peerGroup().setMaxConnections(12);
 		wallet = walletGen.wallet();
+		wallet.allowSpendingUnconfirmedTransactions();
 		wallet.addEventListener(new WalletEventHandler());
+		uiPrepareInit();
+	}
+	
+	void uiPrepareInit() {
+		// TODO inform UI about initial state
 	}
 
 	/**
@@ -127,4 +130,12 @@ public class ARWallet extends Observable {
 		}
     	
     }
+
+    /**
+     * Call to properly close open wallet
+     */
+	public void close() {
+		walletGen.stopAsync();
+        walletGen.awaitTerminated();
+	}
 }

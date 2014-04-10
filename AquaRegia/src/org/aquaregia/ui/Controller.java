@@ -1,17 +1,8 @@
 package org.aquaregia.ui;
 
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.List;
+import java.awt.event.WindowEvent;
 
 import org.aquaregia.wallet.ARWallet;
-
-import com.google.bitcoin.core.DownloadListener;
-import com.google.bitcoin.core.ECKey;
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.WalletEventListener;
-import com.google.bitcoin.script.Script;
 
 /**
  * Binds wallet implementation to interface
@@ -24,6 +15,20 @@ public class Controller {
 	
 	// Add Listener handlers here (with implements on this object)
 	// also make calls to ARWallet based on such events from here
+	// actions will NOT return UI changes to be made,
+	// that will be routed to the view
+	
+	/**
+	 * TODO <--- Make sure to bind this to the window closing of the app frame
+	 * @param winEvt
+	 */
+	public void windowClosing(WindowEvent winEvt) {
+		System.out.println("Caught exit request, shutting down properly.");
+        mwallet.close();
+        System.exit(0);
+    }
+	
+	// initialization code
 
 	public void addModel(ARWallet mwallet) {
 		this.mwallet = mwallet;
