@@ -2,7 +2,9 @@ package org.aquaregia.wallet;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 
@@ -29,15 +31,26 @@ public class ARWallet extends Observable {
 	private Wallet wallet;
 	private WalletInitializer walletGen;
 	
+	/**
+	 * Open default.wallet
+	 */
 	public ARWallet() {
 		initWallet(WALLET_DEFAULT);
 	}
 	
+	/**
+	 * Open given wallet
+	 * @param walletName
+	 */
 	public ARWallet(String walletName) {
 		initWallet(walletName);
 	}
 	
-	void initWallet(String walletName) {
+	/**
+	 * Open wallet
+	 * @param walletName
+	 */
+	private void initWallet(String walletName) {
 		assert(walletName != null);
 		walletGen = new WalletInitializer(params, new File("."),  walletName);
 		
@@ -54,13 +67,51 @@ public class ARWallet extends Observable {
 		wallet = walletGen.wallet();
 		wallet.allowSpendingUnconfirmedTransactions();
 		wallet.addEventListener(new WalletEventHandler());
-		uiPrepareInit();
+		uiInitData();
 	}
 	
-	void uiPrepareInit() {
+	private void uiInitData() {
+		pushBalance();
+		pushHistory();
+		pushOwnedAddresses();
+		pushExchangeRate();
 		// TODO inform UI about initial state
 	}
+	
+	private void pushBalance() {
+		Object[] update = new Object[2];
+		update[0] = ModelUpdate.BALANCE;
+		update[1] = wallet.getBalance();
+		notifyObservers(update);
+	}
+	
+	private void pushHistory() {
+		List<Transaction> txs = wallet.getTransactionsByTime();
+		Iterator<Transaction> txIterator = txs.listIterator();
+		List<SimpleTransactionDetails> det = new ArrayList<SimpleTransactionDetails>();
+		while (txIterator.hasNext()) {
+			Transaction tx = txIterator.next();
+			BigInteger netBalanceChange = tx.getValue(wallet);
+			//...
+			SimpleTransactionDetails td = null; // = new...
+			det.add(td);
+		}
+		// TODO finish
+	}
 
+	private void pushOwnedAddresses() {
+		// TODO
+	}
+	
+	private void pushExchangeRate() {
+		// TODO not goal for week 0
+		Object[] update = new Object[2];
+		update[0] = ModelUpdate.EXCHANGE_RATE;
+		update[1] = 425.0; // TODO update proper
+	}
+	
+	
+	
 	/**
 	 * Returns new blockchain download listener that updates UI on progress
 	 */
