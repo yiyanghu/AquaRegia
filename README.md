@@ -1,4 +1,4 @@
 AquaRegia
 =========
 
-This is for CS 242 project 
+AquaRegia is a multisignature Bitcoin wallet.
