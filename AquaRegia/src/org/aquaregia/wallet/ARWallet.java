@@ -10,7 +10,7 @@ import com.google.bitcoin.kits.WalletAppKit;
 public class ARWallet {
 	public static final String WALLET_DEFAULT = "default";
 	
-	// make the wallet work on main bitcoin network
+	// make the wallet work on main Bitcoin network
 	NetworkParameters params = MainNetParams.get();
 	WalletAppKit bitcoin;
 	
