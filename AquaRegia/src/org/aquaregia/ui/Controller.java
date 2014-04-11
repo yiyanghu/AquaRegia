@@ -24,7 +24,6 @@ public class Controller {
 	 * @param winEvt
 	 */
 	public void windowClosing(WindowEvent winEvt) {
-		System.out.println("Caught exit request, shutting down properly.");
 		closeApp();
     }
 	
@@ -32,6 +31,7 @@ public class Controller {
 	 * Properly shutdown application
 	 */
 	private void closeApp() {
+		System.out.println("*** Caught exit request, shutting down properly.");
         mwallet.close();
         System.exit(0);
 	}

@@ -8,7 +8,7 @@ package org.aquaregia.wallet;
  * @author Stephen Halm
  */
 public enum ModelUpdate {
-	/** Wait for this show UI */
+	/** Wait for this to show UI */
 	SHOW,
 	/**
 	 * o[1] = BitcoinAmount balance

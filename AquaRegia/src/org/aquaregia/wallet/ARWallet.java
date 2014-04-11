@@ -16,12 +16,17 @@ import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
 
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
@@ -37,6 +42,7 @@ public class ARWallet extends Observable {
 	
 	// make the wallet work on main Bitcoin network
 	private NetworkParameters params = MainNetParams.get();
+	private PeerGroup peerGroup;
 	private Wallet wallet;
 	private WalletInitializer walletGen;
 	
@@ -72,11 +78,27 @@ public class ARWallet extends Observable {
 		walletGen.awaitRunning();
 		
 		// post configuration
-		walletGen.peerGroup().setMaxConnections(12);
+		peerGroup = walletGen.peerGroup();
+		peerGroup.setMaxConnections(12);
 		wallet = walletGen.wallet();
 		wallet.allowSpendingUnconfirmedTransactions();
 		wallet.addEventListener(new WalletEventHandler());
 		uiInitData();
+	}
+	
+	/**
+	 * Sends bitcoin
+	 * @param btc - amount of bitcoin to send
+	 * @param destAddress - what address to send to
+	 * @throws AddressFormatException
+	 * @throws InsufficientMoneyException
+	 */
+	public void simpleSendCoins(BitcoinAmount btc, String destAddress) 
+			throws AddressFormatException, InsufficientMoneyException {
+		Address destination = new Address(params, destAddress);
+		
+		SendResult res = wallet.sendCoins(peerGroup, destination, btc);
+		
 	}
 	
 	private void uiInitData() {
@@ -129,7 +151,7 @@ public class ARWallet extends Observable {
 	/**
 	 * Returns new blockchain download listener that updates UI on progress
 	 */
-    public class UIDownloadListener extends DownloadListener {
+    private class UIDownloadListener extends DownloadListener {
         @Override
         protected void progress(double pct, int blocksSoFar, Date date) {
             super.progress(pct, blocksSoFar, date);
@@ -148,7 +170,7 @@ public class ARWallet extends Observable {
     /**
      * Update UI on network events
      */
-    public class WalletEventHandler implements WalletEventListener {
+    private class WalletEventHandler implements WalletEventListener {
 
 		@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
