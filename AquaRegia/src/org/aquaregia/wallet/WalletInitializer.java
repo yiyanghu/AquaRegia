@@ -6,7 +6,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.kits.WalletAppKit;
 
 /**
- * 
+ * Potentially modified WalletAppKit
  * @author Stephen Halm
  */
 public class WalletInitializer extends WalletAppKit {

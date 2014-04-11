@@ -2,6 +2,10 @@ package org.aquaregia.ui;
 
 import org.aquaregia.wallet.ARWallet;
 
+/**
+ * Launches AquaRegia
+ * @author Stephen Halm
+ */
 public class Main {
 	final public static Object INIT_PARAM = null;
 	
@@ -17,5 +21,9 @@ public class Main {
 		controller.initModel(INIT_PARAM);
 		
 		view.addController(controller);
+	}
+	
+	public static void main(String[] args) {
+		new Main();
 	}
 }

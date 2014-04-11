@@ -5,7 +5,7 @@ import java.util.Observer;
 
 /**
  * Bitcoin wallet GUI window
- * @author 
+ * @author Yiyang Hu
  */
 public class WalletView implements Observer {
 	
@@ -18,15 +18,14 @@ public class WalletView implements Observer {
 	 * All from the application is received form here
 	 */
 	@Override
-	public void update(Observable o, Object arg) {
-		// TODO 
-		// There needs to be some kind of message passing
-		// such as arg[0] = type of update string
-		// arg[1..n] parameters as in weekly specification
+	public void update(Observable o, Object update) {
+		// TODO implement updates to UI
+		// see ModelUpdate for format of the update object
 	}
 
 	public void addController(Controller controller) {
 		// TODO bind all event handlers into controller
 		// such as controller.addActionLister(buttonObj)
+		// that means they need to be fields
 	}
 }

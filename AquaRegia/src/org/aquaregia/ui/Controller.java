@@ -20,13 +20,21 @@ public class Controller {
 	
 	/**
 	 * TODO <--- Make sure to bind this to the window closing of the app frame
+	 * also bind closeApp() to File -> Quit
 	 * @param winEvt
 	 */
 	public void windowClosing(WindowEvent winEvt) {
 		System.out.println("Caught exit request, shutting down properly.");
+		closeApp();
+    }
+	
+	/**
+	 * Properly shutdown application
+	 */
+	private void closeApp() {
         mwallet.close();
         System.exit(0);
-    }
+	}
 	
 	// initialization code
 

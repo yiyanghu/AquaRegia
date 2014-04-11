@@ -1,8 +1,10 @@
 package org.aquaregia.wallet;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +22,10 @@ import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 
-
+/**
+ * Manages a Bitcoin Wallet
+ * @author sStephen Halm
+ */
 public class ARWallet extends Observable {
 	public WalletView view;
 	
@@ -32,15 +37,15 @@ public class ARWallet extends Observable {
 	private WalletInitializer walletGen;
 	
 	/**
-	 * Open default.wallet
+	 * Initialize with default.wallet
 	 */
 	public ARWallet() {
 		initWallet(WALLET_DEFAULT);
 	}
 	
 	/**
-	 * Open given wallet
-	 * @param walletName
+	 * Initialize with given wallet
+	 * @param walletName - open walletName + '.wallet'
 	 */
 	public ARWallet(String walletName) {
 		initWallet(walletName);
@@ -75,7 +80,15 @@ public class ARWallet extends Observable {
 		pushHistory();
 		pushOwnedAddresses();
 		pushExchangeRate();
-		// TODO inform UI about initial state
+		// and the UI is ready
+		pushShow();
+		// TODO complete informing UI about initial state
+	}
+	
+	private void pushShow() {
+		Object[] update = new Object[1];
+		update[0] = ModelUpdate.SHOW;
+		notifyObservers(update);
 	}
 	
 	private void pushBalance() {
@@ -86,12 +99,18 @@ public class ARWallet extends Observable {
 	}
 	
 	private void pushHistory() {
+		// new -> old transactions
 		List<Transaction> txs = wallet.getTransactionsByTime();
+		// old -> new transactions
+		Collections.reverse(txs);
 		Iterator<Transaction> txIterator = txs.listIterator();
 		List<SimpleTransactionDetails> det = new ArrayList<SimpleTransactionDetails>();
+		BigInteger total = new BigInteger("0");
 		while (txIterator.hasNext()) {
 			Transaction tx = txIterator.next();
 			BigInteger netBalanceChange = tx.getValue(wallet);
+			BigInteger eventTotal = total.add(netBalanceChange);
+			//tx.
 			//...
 			SimpleTransactionDetails td = null; // = new...
 			det.add(td);
