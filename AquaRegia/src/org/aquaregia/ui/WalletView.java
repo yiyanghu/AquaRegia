@@ -17,6 +17,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.aquaregia.wallet.BitcoinAmount;
+import org.aquaregia.wallet.ModelUpdate;
+
 /**
  * Bitcoin wallet GUI window
  * Draw the background and tabs
@@ -72,9 +75,27 @@ public class WalletView extends JFrame implements Observer {
 	 * received form here
 	 */
 	@Override
-	public void update(Observable o, Object update) {
+	public void update(Observable obsv, Object update) {
 		// TODO implement updates to UI
 		// see ModelUpdate for format of the update object
+		Object[] up = (Object[]) update;
+		ModelUpdate type = (ModelUpdate) up[0];
+		switch(type) {
+			case BALANCE:
+				BitcoinAmount bal = (BitcoinAmount) up[1];
+				// TODO send to UI
+				break;
+			case EXCHANGE_RATE:
+				break;
+			case HISTORY:
+				break;
+			case OWNED_ADDRESSES:
+				break;
+			case SHOW:
+				break;
+			default:
+				break;
+		}
 	}
 
 	public void addController(Controller controller) {
