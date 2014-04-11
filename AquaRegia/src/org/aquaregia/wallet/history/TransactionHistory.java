@@ -9,6 +9,10 @@ import java.util.List;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
 
+/**
+ * A list of transactions in the wallet's history
+ * @author Stephen Halm
+ */
 public class TransactionHistory extends ArrayList<SimpleTransactionDetails> {
 
 	/**

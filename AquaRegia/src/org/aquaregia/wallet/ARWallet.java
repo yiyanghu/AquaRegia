@@ -9,7 +9,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.Executor;
 
+import javax.swing.SwingUtilities;
+
+import org.aquaregia.ui.Main;
 import org.aquaregia.ui.WalletView;
 import org.aquaregia.ui.Strings;
 import org.aquaregia.wallet.addressbook.AddressBook;
@@ -26,14 +30,16 @@ import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.utils.Threading;
 
 /**
  * Manages a Bitcoin Wallet
- * @author sStephen Halm
+ * @author Stephen Halm
  */
 public class ARWallet extends Observable {
 	public WalletView view;
@@ -83,8 +89,13 @@ public class ARWallet extends Observable {
 		wallet = walletGen.wallet();
 		wallet.allowSpendingUnconfirmedTransactions();
 		wallet.addEventListener(new WalletEventHandler());
+		// ensure we have atleast one address
+		if (wallet.getKeychainSize() < 1)
+			addAddress();
 		uiInitData();
 	}
+	
+	// Commands available for UI
 	
 	/**
 	 * Sends bitcoin
@@ -97,9 +108,25 @@ public class ARWallet extends Observable {
 			throws AddressFormatException, InsufficientMoneyException {
 		Address destination = new Address(params, destAddress);
 		
+		// TODO do something about failed sends
 		SendResult res = wallet.sendCoins(peerGroup, destination, btc);
-		
+		res.broadcastComplete.addListener(new Runnable() {
+			@Override
+			public void run() {
+				// TODO inform UI that transaction is sent
+			}
+			
+		}, Threading.USER_THREAD);
 	}
+	
+	/**
+	 * Add a new receiving address to the wallet
+	 */
+	public void addAddress() {
+		wallet.addKey(new ECKey());
+	}
+	
+	// UI updating
 	
 	private void uiInitData() {
 		pushBalance();
@@ -175,27 +202,23 @@ public class ARWallet extends Observable {
 		@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
-			// TODO Auto-generated method stub
-			
+			// see onWalletChanged
 		}
 
 		@Override
 		public void onCoinsSent(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
-			// TODO Auto-generated method stub
-			
+			// see onWalletChanged
 		}
 
 		@Override
 		public void onKeysAdded(Wallet wallet, List<ECKey> keys) {
-			// TODO Auto-generated method stub
-			
+			pushOwnedAddresses();
 		}
 
 		@Override
 		public void onReorganize(Wallet wallet) {
-			// TODO Auto-generated method stub
-			
+			// see onWalletChanged
 		}
 
 		@Override
@@ -206,14 +229,14 @@ public class ARWallet extends Observable {
 
 		@Override
 		public void onTransactionConfidenceChanged(Wallet wallet, Transaction tx) {
-			// TODO Auto-generated method stub
-			
+			// see onWalletChanged
 		}
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
-			// TODO Auto-generated method stub
-			
+			System.out.println("wallet changed event");
+			pushBalance();
+			pushHistory();
 		}
     	
     }
