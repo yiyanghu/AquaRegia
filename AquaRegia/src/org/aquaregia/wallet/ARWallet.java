@@ -12,11 +12,15 @@ import java.util.Observable;
 
 import org.aquaregia.ui.WalletView;
 import org.aquaregia.ui.Strings;
+import org.aquaregia.wallet.addressbook.AddressBook;
+import org.aquaregia.wallet.history.SimpleTransactionDetails;
+import org.aquaregia.wallet.history.TransactionHistory;
 
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
@@ -86,50 +90,41 @@ public class ARWallet extends Observable {
 	}
 	
 	private void pushShow() {
-		Object[] update = new Object[1];
-		update[0] = ModelUpdate.SHOW;
+		Object[] update = {ModelUpdate.SHOW};
 		notifyObservers(update);
 	}
 	
 	private void pushBalance() {
-		Object[] update = new Object[2];
-		update[0] = ModelUpdate.BALANCE;
-		update[1] = wallet.getBalance();
+		Object[] update = {
+			ModelUpdate.BALANCE,
+			new BitcoinAmount(wallet.getBalance())
+		};
 		notifyObservers(update);
 	}
 	
 	private void pushHistory() {
-		// new -> old transactions
-		List<Transaction> txs = wallet.getTransactionsByTime();
-		// old -> new transactions
-		Collections.reverse(txs);
-		Iterator<Transaction> txIterator = txs.listIterator();
-		List<SimpleTransactionDetails> det = new ArrayList<SimpleTransactionDetails>();
-		BigInteger total = new BigInteger("0");
-		while (txIterator.hasNext()) {
-			Transaction tx = txIterator.next();
-			BigInteger netBalanceChange = tx.getValue(wallet);
-			BigInteger eventTotal = total.add(netBalanceChange);
-			//tx.
-			//...
-			SimpleTransactionDetails td = null; // = new...
-			det.add(td);
-		}
-		// TODO finish
+		Object[] update = {
+				ModelUpdate.HISTORY,
+				new TransactionHistory(wallet)
+		};
+		notifyObservers(update);
 	}
 
 	private void pushOwnedAddresses() {
-		// TODO
+		Object[] update = {
+				ModelUpdate.OWNED_ADDRESSES,
+				new AddressBook(wallet.getKeys(), params)
+		};
+		notifyObservers(update);
 	}
 	
 	private void pushExchangeRate() {
 		// TODO not goal for week 0
 		Object[] update = new Object[2];
 		update[0] = ModelUpdate.EXCHANGE_RATE;
-		update[1] = 425.0; // TODO update proper
+		update[1] = 425.0; // TODO update proper instead of dummy value
+		notifyObservers(update);
 	}
-	
-	
 	
 	/**
 	 * Returns new blockchain download listener that updates UI on progress

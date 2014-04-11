@@ -11,15 +11,15 @@ public enum ModelUpdate {
 	/** Wait for this show UI */
 	SHOW,
 	/**
-	 * o[1] = BigInteger balance
+	 * o[1] = BitcoinAmount balance
 	 */
 	BALANCE,
 	/**
-	 * TODO spec
+	 * o[1] = TransactionHistory history
 	 */
 	HISTORY,
 	/**
-	 * TODO spec
+	 * o[1] = AddressBook addresses
 	 */
 	OWNED_ADDRESSES,
 	/**

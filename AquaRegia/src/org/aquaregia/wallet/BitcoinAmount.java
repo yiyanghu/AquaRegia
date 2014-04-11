@@ -10,6 +10,11 @@ import java.math.BigInteger;
  */
 public class BitcoinAmount extends BigInteger {
 	
+	/**
+	 * Initial version
+	 */
+	private static final long serialVersionUID = 1L;
+
 	enum B {
 		COINS(8), MILLI(5), MICRO(2), SATOSHI(0);
 		public final int scale;
