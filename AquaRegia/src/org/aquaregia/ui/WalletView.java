@@ -12,6 +12,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -39,6 +40,7 @@ public class WalletView extends JFrame implements Observer {
 		getContentPane().add(panel);
 
 		panel.setLayout(null);
+		addBalance("0");
 		addTabs();
 
 		setTitle("Aqua Regia");
@@ -46,6 +48,13 @@ public class WalletView extends JFrame implements Observer {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+	}
+	
+	private void addBalance(String bitBalance){
+		JLabel balance = new JLabel("Balance  "+bitBalance+"  BTC");
+		Insets insets = this.getInsets();
+		balance.setBounds(15+insets.left,4+insets.top,100,38);
+		add(balance);
 	}
 
 	private void addTabs() {
