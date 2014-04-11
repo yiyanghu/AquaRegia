@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 /**
  * Bitcoin wallet GUI window
- * 
+ * Draw the background and tabs
  * @author Yiyang Hu
  */
 public class WalletView extends JFrame implements Observer {
@@ -36,7 +36,7 @@ public class WalletView extends JFrame implements Observer {
 		getContentPane().add(panel);
 
 		panel.setLayout(null);
-		addTab();
+		addTabs();
 
 		setTitle("Aqua Regia");
 		setSize(700, 600);
@@ -45,35 +45,19 @@ public class WalletView extends JFrame implements Observer {
 
 	}
 
-	private void addTab() {
+	private void addTabs() {
 		// creating tabbed pane and tabs and contents
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		JComponent send = makeTextPanel("The contents of send");
-		send.setLayout(null);
+		
+		JComponent send = new SendTab();
 		tabbedPane.addTab("send", send);
-
-		Insets insets = send.getInsets();
-		// creating address with textfield
-		JTextField addressInput = new JTextField("address should go here", 25);
-		// addressInput.setPreferredSize(new Dimension(35,25));
-		addressInput.setBounds(200 + insets.left, 40 + insets.top, 200, 30);
-		send.add(addressInput);
-
-		// creating description with textarea
-		JTextArea description = new JTextArea("Describe the transaction");
-		description.setBounds(200+insets.left,100+insets.top,300,300);
-		send.add(description);
-
-		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-
-		JComponent receive = makeTextPanel("The conetents of receive");
+	
+		JComponent receive = new ReceiveTab();
 		tabbedPane.addTab("receive", receive);
-		tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
-		JComponent history = makeTextPanel("The contents of transaction history");
+		JComponent history = new HistoryTab();
 		tabbedPane.addTab("history", history);
-		tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
 		add(tabbedPane);
 
@@ -82,19 +66,6 @@ public class WalletView extends JFrame implements Observer {
 
 	}
 
-	private void addSendContents() {
-
-	}
-
-	protected JComponent makeTextPanel(String text) {
-		JPanel panel = new JPanel(false);
-		// JLabel filler = new JLabel(text);
-		// filler.setHorizontalAlignment(JLabel.CENTER);
-		// panel.setLayout(new GridLayout(1,1));
-		// panel.add(filler);
-		return panel;
-
-	}
 
 	/**
 	 * Called by model (ARWallet) to update state All from the application is
