@@ -100,7 +100,8 @@ public class WalletView extends JFrame implements Observer {
 
 	public void addController(Controller controller) {
 		// TODO bind all event handlers into controller
-		// such as controller.addActionLister(buttonObj)
+		// such as buttonObj.addActionLister(conroller)
 		// that means they need to be fields
+		this.addWindowListener(controller);
 	}
 }

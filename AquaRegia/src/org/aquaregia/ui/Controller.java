@@ -1,6 +1,9 @@
 package org.aquaregia.ui;
 
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import javax.swing.JFrame;
 
 import org.aquaregia.wallet.ARWallet;
 
@@ -8,7 +11,7 @@ import org.aquaregia.wallet.ARWallet;
  * Binds wallet implementation to interface
  * @author Stephen Halm
  */
-public class Controller {
+public class Controller implements WindowListener {
 
 	private ARWallet mwallet;
 	private WalletView view;
@@ -23,17 +26,44 @@ public class Controller {
 	 * also bind closeApp() to File -> Quit
 	 * @param winEvt
 	 */
+	@Override
 	public void windowClosing(WindowEvent winEvt) {
-		closeApp();
+		closeApp((JFrame) winEvt.getSource());
     }
+	
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+	}
 	
 	/**
 	 * Properly shutdown application
 	 */
-	private void closeApp() {
+	private void closeApp(JFrame f) {
 		System.out.println("*** Caught exit request, shutting down properly.");
-        mwallet.close();
-        System.exit(0);
+		// Clean up in the background
+        f.setVisible(false);
+		mwallet.close();
+		System.exit(0);
 	}
 	
 	// initialization code
