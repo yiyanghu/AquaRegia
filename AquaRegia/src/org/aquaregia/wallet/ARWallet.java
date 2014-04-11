@@ -198,7 +198,7 @@ public class ARWallet extends Observable {
      * Update UI on network events
      */
     private class WalletEventHandler implements WalletEventListener {
-
+    	private int i = 0;
 		@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
@@ -234,7 +234,7 @@ public class ARWallet extends Observable {
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
-			System.out.println("wallet changed event");
+			System.out.println("wallet changed event" + ++i);
 			pushBalance();
 			pushHistory();
 		}
