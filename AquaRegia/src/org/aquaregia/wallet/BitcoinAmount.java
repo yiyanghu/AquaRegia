@@ -15,7 +15,7 @@ public class BitcoinAmount extends BigInteger {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	enum B {
+	public enum B {
 		COINS(8), MILLI(5), MICRO(2), SATOSHI(0);
 		public final int scale;
 		B(int s) {
