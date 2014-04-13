@@ -53,6 +53,7 @@ public class Controller implements WindowListener {
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+		mwallet.viewOpened();
 	}
 	
 	/**

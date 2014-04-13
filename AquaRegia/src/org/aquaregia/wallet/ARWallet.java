@@ -92,7 +92,6 @@ public class ARWallet extends Observable {
 		// ensure we have atleast one address
 		if (wallet.getKeychainSize() < 1)
 			addAddress();
-		uiInitData();
 	}
 	
 	// Commands available for UI
@@ -127,6 +126,10 @@ public class ARWallet extends Observable {
 	}
 	
 	// UI updating
+
+	public void viewOpened() {
+		uiInitData();
+	}
 	
 	private void uiInitData() {
 		pushBalance();
@@ -253,4 +256,5 @@ public class ARWallet extends Observable {
 		walletGen.stopAsync();
         walletGen.awaitTerminated();
 	}
+
 }
