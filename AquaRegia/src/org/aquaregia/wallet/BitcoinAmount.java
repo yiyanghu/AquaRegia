@@ -32,14 +32,27 @@ public class BitcoinAmount extends BigInteger {
 	}
 	
 	public String coins() {
-		return new BigDecimal(this, 8).stripTrailingZeros().toPlainString();
+		return stripTrailingZerosBugFix(new BigDecimal(this, 8)).toPlainString();
 	}
 	
 	public String milliCoins() {
-		return new BigDecimal(this, 5).stripTrailingZeros().toPlainString();
+		return stripTrailingZerosBugFix(new BigDecimal(this, 5)).toPlainString();
+
 	}
 	
 	public String microCoins() {
-		return new BigDecimal(this, 2).stripTrailingZeros().toPlainString();
+		return stripTrailingZerosBugFix(new BigDecimal(this, 2)).toPlainString();
+	}
+	
+	/**
+	 * Workaround for http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6480539
+	 * @param d - decimal number
+	 * @return trailing zero stripped fix
+	 */
+	private BigDecimal stripTrailingZerosBugFix(BigDecimal d) {
+		if (d.compareTo(BigDecimal.ZERO) == 0)
+			return BigDecimal.ZERO;
+		else
+			return d.stripTrailingZeros();
 	}
 }

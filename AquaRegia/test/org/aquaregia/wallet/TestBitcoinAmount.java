@@ -21,6 +21,10 @@ public class TestBitcoinAmount {
 		assertEquals("0.007", s.coins());
 		assertEquals("7", s.milliCoins());
 		assertEquals("7000", s.microCoins());
+		
+		String zeroStr = "0";
+		BitcoinAmount zero = new BitcoinAmount(new BigInteger(zeroStr));
+		assertEquals(zeroStr, zero.coins());
 	}
 
 	
