@@ -42,7 +42,7 @@ import com.google.bitcoin.utils.Threading;
  * @author Stephen Halm
  */
 public class ARWallet extends Observable {
-	public WalletView view;
+	//public WalletView view;
 	
 	public static final String WALLET_DEFAULT = "default";
 	
@@ -140,6 +140,7 @@ public class ARWallet extends Observable {
 	
 	private void pushShow() {
 		Object[] update = {ModelUpdate.SHOW};
+		setChanged();
 		notifyObservers(update);
 	}
 	
@@ -148,6 +149,7 @@ public class ARWallet extends Observable {
 			ModelUpdate.BALANCE,
 			new BitcoinAmount(wallet.getBalance())
 		};
+		setChanged();
 		notifyObservers(update);
 	}
 	
@@ -156,6 +158,7 @@ public class ARWallet extends Observable {
 				ModelUpdate.HISTORY,
 				new TransactionHistory(wallet)
 		};
+		setChanged();
 		notifyObservers(update);
 	}
 
@@ -164,6 +167,7 @@ public class ARWallet extends Observable {
 				ModelUpdate.OWNED_ADDRESSES,
 				new AddressBook(wallet.getKeys(), params)
 		};
+		setChanged();
 		notifyObservers(update);
 	}
 	
@@ -172,6 +176,7 @@ public class ARWallet extends Observable {
 		Object[] update = new Object[2];
 		update[0] = ModelUpdate.EXCHANGE_RATE;
 		update[1] = 425.0; // TODO update proper instead of dummy value
+		setChanged();
 		notifyObservers(update);
 	}
 	
