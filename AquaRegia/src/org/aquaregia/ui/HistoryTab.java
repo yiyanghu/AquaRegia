@@ -37,7 +37,7 @@ public class HistoryTab extends JPanel {
 	
 	
 	private void addHistoryTable(Insets insets){
-		String[] columnNames = {"Status","Date","Description","Amount(BTC)","Amount($)"};
+		String[] columnNames = {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
 		
 		Object[][] data = {{"finished","2014/04/01","test transaction","10","4000"},
 				{"in transit","2018/05/01","Bitcoin no joke","0.5","200"}};

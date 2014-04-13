@@ -93,6 +93,7 @@ public class WalletView extends JFrame implements Observer {
 			case BALANCE:
 				BitcoinAmount bal = (BitcoinAmount) up[1];
 				// TODO send to UI
+				System.out.printf("balance is %s",bal.coins());
 				break;
 			case EXCHANGE_RATE:
 				break;
