@@ -1,5 +1,7 @@
 package org.aquaregia.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -15,6 +17,12 @@ public class Controller implements WindowListener {
 
 	private ARWallet mwallet;
 	private WalletView view;
+	
+	public GenerateKeyHandler gKHandler;
+	
+	public Controller() {
+		gKHandler = new GenerateKeyHandler();
+	}
 	
 	// Add Listener handlers here (with implements on this object)
 	// also make calls to ARWallet based on such events from here
@@ -81,4 +89,14 @@ public class Controller implements WindowListener {
 		return;
 	}
 
+	public class GenerateKeyHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			mwallet.addAddress();
+		}
+		
+	}
+	
 }

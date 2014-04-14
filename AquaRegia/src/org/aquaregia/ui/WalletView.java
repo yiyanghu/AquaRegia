@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import org.aquaregia.wallet.BitcoinAmount;
 import org.aquaregia.wallet.ModelUpdate;
+import org.aquaregia.wallet.addressbook.AddressBook;
 
 /**
  * Bitcoin wallet GUI window
@@ -30,6 +31,9 @@ public class WalletView extends JFrame implements Observer {
 	
 
 	private JLabel balance;
+	public SendTab send;
+	public ReceiveTab receive;
+	public HistoryTab history;
 
 	// TODO initialize GUI here
 	public WalletView() {
@@ -69,13 +73,13 @@ public class WalletView extends JFrame implements Observer {
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
-		JComponent send = new SendTab();
+		send = new SendTab();
 		tabbedPane.addTab("send", send);
 	
-		JComponent receive = new ReceiveTab();
+		receive = new ReceiveTab();
 		tabbedPane.addTab("receive", receive);
 
-		JComponent history = new HistoryTab();
+		history = new HistoryTab();
 		tabbedPane.addTab("history", history);
 
 		add(tabbedPane);
@@ -106,6 +110,8 @@ public class WalletView extends JFrame implements Observer {
 			case HISTORY:
 				break;
 			case OWNED_ADDRESSES:
+				AddressBook addresses = (AddressBook) up[1];
+				receive.updateTable(addresses);		
 				break;
 			case SHOW:
 				break;
@@ -116,8 +122,9 @@ public class WalletView extends JFrame implements Observer {
 
 	public void addController(Controller controller) {
 		// TODO bind all event handlers into controller
-		// such as buttonObj.addActionLister(conroller)
+		// such as buttonObj.addActionLister(controller)
 		// that means they need to be fields
 		this.addWindowListener(controller);
+		receive.addController(controller);
 	}
 }

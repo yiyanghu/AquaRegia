@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,7 +22,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import org.aquaregia.wallet.addressbook.AddressBook;
+import org.aquaregia.wallet.addressbook.AddressBookEntry;
 
 
 
@@ -33,11 +38,18 @@ import javax.swing.table.JTableHeader;
 
 public class ReceiveTab extends JPanel {
 	
+	private JButton sendButton;
+	public JTextField address;
+	private JTable table;
+	private AddressTableModel tableModel;
+	private String[] columnNames;
+	
 	/*
 	 * This is the constructor for the receiving tab
 	 * It displays the default address, asking for transaction description and amount
 	 * It also shows the table of all receiving addresses
 	 */
+	
 	
 	public ReceiveTab(){
 				
@@ -46,9 +58,10 @@ public class ReceiveTab extends JPanel {
 		
 		addLabel(insets, "Address", 100, 40, 80, 30);
 
-		addTextField(insets,"To-do: this should display automatically of the address",200,40,250,30);
+		address = addTextField(insets,"",200,40,250,30);
 		
-		JButton sendButton = new JButton("generate key");
+		
+		sendButton = new JButton("generate key");
 		sendButton.setBounds(500+insets.left,40+insets.top,150,30);
 		this.add(sendButton);
 		
@@ -73,28 +86,55 @@ public class ReceiveTab extends JPanel {
 		this.add(label);
 	}
 	
-	private void addTextField(Insets insets, String name, int left, int top,
+	private JTextField addTextField(Insets insets, String name, int left, int top,
 			int width, int height) {
 		JTextField text = new JTextField(name);
 		text.setBounds(left+insets.left,top+insets.top,width,height);
 		this.add(text);
+		return text;
 	}
 	
 	private void addAddressTable(Insets insets){
-		String[] columnNames = {"Description","Address"};
+		columnNames = new String[] {"Description","Address"};
 		
-		Object[][] data = {{"random comment","0101010101"},{"second legit comment","987654321"}};
+		Object[][] data = {};
 		
-		JTable table= new JTable(data,columnNames);
+		tableModel = new AddressTableModel();
+		tableModel.setDataVector(data,columnNames);
+		table = new JTable(tableModel);
+		
+		
 		JTableHeader header = table.getTableHeader();
 		//header.setBackground(Color.yellow);
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(header,BorderLayout.NORTH);
 		panel.add(table,BorderLayout.CENTER);
-		panel.setBounds(100+insets.left,220+insets.top, 500,300);
+		panel.setBounds(100+insets.left,220+insets.top, 650,300);
 		this.add(panel);
 
+	}
+	
+	public void updateTable(AddressBook addresses){
+		Object[][] data = new Object[addresses.size()][];
+		for (int i=0;i<addresses.size();i++){
+			Object[] row={"",addresses.get(i).getAddress().toString()};
+			data[i] = row;
+			
+		}
+		tableModel.setDataVector(data,columnNames);
+		
+	}
+	
+	public void addController(Controller controller){
+		sendButton.addActionListener(controller.gKHandler);
+	}
+	
+	private class AddressTableModel extends DefaultTableModel {
+		@Override
+		public boolean isCellEditable(int row, int col){
+			return false;		
+		}
 	}
 		
 
