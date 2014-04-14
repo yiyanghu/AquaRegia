@@ -120,9 +120,12 @@ public class ARWallet extends Observable {
 	
 	/**
 	 * Add a new receiving address to the wallet
+	 * @return address that was added
 	 */
-	public void addAddress() {
-		wallet.addKey(new ECKey());
+	public Address addAddress() {
+		ECKey key = new ECKey();
+		wallet.addKey(key);
+		return key.toAddress(params);
 	}
 	
 	// UI updating
