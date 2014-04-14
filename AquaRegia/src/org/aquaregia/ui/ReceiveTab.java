@@ -48,6 +48,10 @@ public class ReceiveTab extends JPanel {
 
 		addTextField(insets,"To-do: this should display automatically of the address",200,40,250,30);
 		
+		JButton sendButton = new JButton("generate key");
+		sendButton.setBounds(500+insets.left,40+insets.top,150,30);
+		this.add(sendButton);
+		
 		addLabel(insets, "Description", 100, 100, 80, 30);
 		
 		addTextField(insets,"describe the transaction here",200,100,350,30);

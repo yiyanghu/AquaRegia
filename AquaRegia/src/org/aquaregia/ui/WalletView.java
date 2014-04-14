@@ -27,6 +27,9 @@ import org.aquaregia.wallet.ModelUpdate;
  * @author Yiyang Hu
  */
 public class WalletView extends JFrame implements Observer {
+	
+
+	private JLabel balance;
 
 	// TODO initialize GUI here
 	public WalletView() {
@@ -40,7 +43,7 @@ public class WalletView extends JFrame implements Observer {
 		getContentPane().add(panel);
 
 		panel.setLayout(null);
-		addBalance("0");
+		addBalance();
 		addTabs();
 
 		setTitle("Aqua Regia");
@@ -50,11 +53,15 @@ public class WalletView extends JFrame implements Observer {
 
 	}
 	
-	private void addBalance(String bitBalance){
-		JLabel balance = new JLabel("Balance  "+bitBalance+"  BTC");
+	private void addBalance(){
+		balance = new JLabel("");
 		Insets insets = this.getInsets();
 		balance.setBounds(15+insets.left,4+insets.top,100,38);
 		add(balance);
+	}
+	
+	private void updateBalance(BitcoinAmount amt){
+		balance.setText("Balance  "+amt.coins()+"  BTC");
 	}
 
 	private void addTabs() {
@@ -92,8 +99,7 @@ public class WalletView extends JFrame implements Observer {
 		switch(type) {
 			case BALANCE:
 				BitcoinAmount bal = (BitcoinAmount) up[1];
-				// TODO send to UI
-				System.out.printf("balance is %s",bal.coins());
+				updateBalance(bal);
 				break;
 			case EXCHANGE_RATE:
 				break;
