@@ -84,14 +84,14 @@ public class SimpleTransactionDetails {
 	}
 	
 	/**
-	 * Gets description of transaction (currently just send from/receive to where
+	 * Gets description of transaction (currently just send from/receive to where)
 	 * @return description
 	 */
 	public String description() {
 		String desc = "";
 		boolean out1 = false;
 		for (TransactionOutput out : tx.getOutputs()) {
-			if (out.isWatched(wallet)) {
+			if (out.isMine(wallet)) {
 				desc += ">" + out.getScriptPubKey().getToAddress(params).toString();
 				if (!out1)
 					out1 = true;
