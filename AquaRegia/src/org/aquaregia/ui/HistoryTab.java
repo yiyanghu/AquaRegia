@@ -22,6 +22,12 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import org.aquaregia.wallet.BitcoinAmount;
+import org.aquaregia.wallet.addressbook.AddressBook;
+import org.aquaregia.wallet.history.SimpleTransactionDetails;
+import org.aquaregia.wallet.history.TransactionHistory;
+
+
 /**
  * Draw the history tab
  * @author Yiyang Hu
@@ -32,6 +38,7 @@ public class HistoryTab extends JPanel {
 	
 	private JTable table;
 	private TransactionHistoryModel model;
+	private String[] columnNames;
 	
 	public HistoryTab(){
 		this.setLayout(null);
@@ -41,13 +48,17 @@ public class HistoryTab extends JPanel {
 	
 	
 	private void addHistoryTable(Insets insets){
-		String[] columnNames = {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
+		columnNames = new String[] {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
 		
 		Object[][] data = {};
 		
-		JTable table= new JTable(data,columnNames);
+		model = new TransactionHistoryModel();
+		model.setDataVector(data,columnNames);
+		table = new JTable(model);
+		
+				
+		
 		JTableHeader header = table.getTableHeader();
-		//header.setBackground(Color.yellow);
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(header,BorderLayout.NORTH);
@@ -57,7 +68,28 @@ public class HistoryTab extends JPanel {
 
 	}
 	
+	public void updateTransactionTable (TransactionHistory history){
+		Object[][] data = new Object[history.size()][];
+		for (int i=0;i<history.size();i++){
+			SimpleTransactionDetails trans= history.get(i);
+			String netTrans =  trans.getNetBalanceChange().coins();
+			String balance = trans.getEventTotal().coins();
+			Object[] row ={trans.confidenceString(),trans.getTxTime(),
+					trans.description(),netTrans,balance};
+			data[i] = row;
+		}
+		
+		model.setDataVector(data, columnNames);
+	}
+		
+
+	
 	private class TransactionHistoryModel extends DefaultTableModel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		@Override 
 		public boolean isCellEditable(int row, int col){
 				return false;

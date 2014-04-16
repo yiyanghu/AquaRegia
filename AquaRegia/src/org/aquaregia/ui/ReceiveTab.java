@@ -105,7 +105,6 @@ public class ReceiveTab extends JPanel {
 		
 		
 		JTableHeader header = table.getTableHeader();
-		//header.setBackground(Color.yellow);
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(header,BorderLayout.NORTH);

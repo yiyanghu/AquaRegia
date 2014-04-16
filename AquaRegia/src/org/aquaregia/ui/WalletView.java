@@ -21,6 +21,8 @@ import javax.swing.JTextField;
 import org.aquaregia.wallet.BitcoinAmount;
 import org.aquaregia.wallet.ModelUpdate;
 import org.aquaregia.wallet.addressbook.AddressBook;
+import org.aquaregia.wallet.history.SimpleTransactionDetails;
+import org.aquaregia.wallet.history.TransactionHistory;
 
 /**
  * Bitcoin wallet GUI window
@@ -108,6 +110,8 @@ public class WalletView extends JFrame implements Observer {
 			case EXCHANGE_RATE:
 				break;
 			case HISTORY:
+				TransactionHistory trans = (TransactionHistory) up[1];
+				history.updateTransactionTable(trans);
 				break;
 			case OWNED_ADDRESSES:
 				AddressBook addresses = (AddressBook) up[1];
