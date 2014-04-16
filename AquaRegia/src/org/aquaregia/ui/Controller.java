@@ -6,8 +6,15 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import org.aquaregia.wallet.ARWallet;
+import org.aquaregia.wallet.BitcoinAmount;
+
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.InsufficientMoneyException;
+
 
 /**
  * Binds wallet implementation to interface
@@ -19,9 +26,11 @@ public class Controller implements WindowListener {
 	private WalletView view;
 	
 	public GenerateKeyHandler gKHandler;
+	public SendCoinHandler sCHandler;
 	
 	public Controller() {
 		gKHandler = new GenerateKeyHandler();
+		sCHandler = new SendCoinHandler();
 	}
 	
 	// Add Listener handlers here (with implements on this object)
@@ -97,6 +106,27 @@ public class Controller implements WindowListener {
 			mwallet.addAddress();
 		}
 		
+	}
+	
+	public class SendCoinHandler implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			// send the address and amount
+			BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
+											view.send.amount.getText());
+			try {
+				mwallet.simpleSendCoins(sendAmount, view.send.address.getText());
+			} catch (AddressFormatException e1) {
+				
+				JOptionPane.showMessageDialog(view,"Invalid Address",
+						"Please check your address is in the correct format",JOptionPane.ERROR_MESSAGE);	
+			} catch (InsufficientMoneyException e1) {
+				
+				BitcoinAmount missingValue = new BitcoinAmount(e1.missing);
+				JOptionPane.showMessageDialog(view,"Insufficient amount",
+						"You are missing " + missingValue.coins()+ " BTC",JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 }

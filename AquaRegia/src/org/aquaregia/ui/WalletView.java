@@ -126,5 +126,6 @@ public class WalletView extends JFrame implements Observer {
 		// that means they need to be fields
 		this.addWindowListener(controller);
 		receive.addController(controller);
+		send.addController(controller);
 	}
 }
