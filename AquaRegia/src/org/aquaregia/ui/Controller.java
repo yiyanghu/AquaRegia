@@ -17,6 +17,7 @@ import org.aquaregia.wallet.BitcoinAmount;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.InsufficientMoneyException;
+import com.google.bitcoin.core.Transaction;
 
 
 /**
@@ -143,10 +144,12 @@ public class Controller implements WindowListener {
 			try {
 				BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
 											view.send.amount.getText());
-
 				String address = view.send.address.getText();
+				BitcoinAmount fee = new BitcoinAmount(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
+				BitcoinAmount total = new BitcoinAmount(sendAmount.add(fee));
 				int okSend = JOptionPane.showConfirmDialog(view, "Are you sure you want to send "
-						+ sendAmount.coins() + " BTC?",
+						+ sendAmount.coins() + " BTC, which has a usual fee of " + fee.coins()
+						+ " BTC, for a total of " + total.coins() + " BTC?",
 						"Send Bitcoins?", JOptionPane.YES_NO_OPTION);
 				if (okSend != JOptionPane.YES_OPTION)
 					return;
