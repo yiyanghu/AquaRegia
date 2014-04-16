@@ -92,6 +92,8 @@ public class ARWallet extends Observable {
 		// ensure we have atleast one address
 		if (wallet.getKeychainSize() < 1)
 			addAddress();
+		
+		//uiInitData();
 	}
 	
 	// Commands available for UI

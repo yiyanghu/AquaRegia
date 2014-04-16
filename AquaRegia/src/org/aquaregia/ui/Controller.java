@@ -70,6 +70,12 @@ public class Controller implements WindowListener {
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+		//mwallet.viewOpened();
+	}
+	
+	// UI init
+	
+	public void viewReady() {
 		mwallet.viewOpened();
 	}
 	

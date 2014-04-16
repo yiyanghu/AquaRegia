@@ -40,6 +40,9 @@ public class WalletView extends JFrame implements Observer {
 	// TODO initialize GUI here
 	public WalletView() {
 		initUI();
+	}
+	
+	private void showWindow() {
 		this.setVisible(true);
 	}
 
@@ -118,6 +121,7 @@ public class WalletView extends JFrame implements Observer {
 				receive.updateTable(addresses);		
 				break;
 			case SHOW:
+				showWindow();
 				break;
 			default:
 				break;
@@ -131,5 +135,6 @@ public class WalletView extends JFrame implements Observer {
 		this.addWindowListener(controller);
 		receive.addController(controller);
 		send.addController(controller);
+		controller.viewReady();
 	}
 }
