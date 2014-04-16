@@ -15,6 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -54,16 +55,14 @@ public class HistoryTab extends JPanel {
 		
 		model = new TransactionHistoryModel();
 		model.setDataVector(data,columnNames);
-		table = new JTable(model);
-		
+		table = new JTable(model);		
 				
-		
-		JTableHeader header = table.getTableHeader();
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
-		panel.add(header,BorderLayout.NORTH);
-		panel.add(table,BorderLayout.CENTER);
-		panel.setBounds(5+insets.left,5+insets.top, 700,600);
+		panel.setBounds(5+insets.left,5+insets.top, 650,450);
+		JScrollPane tableScrollPane=  new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		panel.add(tableScrollPane,BorderLayout.CENTER);
 		this.add(panel);
 
 	}

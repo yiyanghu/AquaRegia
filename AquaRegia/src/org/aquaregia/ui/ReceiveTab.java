@@ -103,13 +103,12 @@ public class ReceiveTab extends JPanel {
 		tableModel.setDataVector(data,columnNames);
 		table = new JTable(tableModel);
 		
-		
-		JTableHeader header = table.getTableHeader();
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
-		panel.add(header,BorderLayout.NORTH);
-		panel.add(table,BorderLayout.CENTER);
-		panel.setBounds(100+insets.left,220+insets.top, 650,300);
+		panel.setBounds(100+insets.left,220+insets.top, 550,300);
+		JScrollPane tableScrollPane=  new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		panel.add(tableScrollPane,BorderLayout.CENTER);
 		this.add(panel);
 
 	}
