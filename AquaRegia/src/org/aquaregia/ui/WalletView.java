@@ -65,7 +65,7 @@ public class WalletView extends JFrame implements Observer {
 	private void addBalance(){
 		balance = new JLabel("");
 		Insets insets = this.getInsets();
-		balance.setBounds(15+insets.left,4+insets.top,100,38);
+		balance.setBounds(15+insets.left,4+insets.top,200,38);
 		add(balance);
 	}
 	

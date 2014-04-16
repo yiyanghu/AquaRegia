@@ -8,6 +8,9 @@ import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.aquaregia.wallet.ARWallet;
 import org.aquaregia.wallet.BitcoinAmount;
@@ -27,10 +30,12 @@ public class Controller implements WindowListener {
 	
 	public GenerateKeyHandler gKHandler;
 	public SendCoinHandler sCHandler;
+	public AddressSelectionHandler addressSelectionHandler;
 	
 	public Controller() {
 		gKHandler = new GenerateKeyHandler();
 		sCHandler = new SendCoinHandler();
+		addressSelectionHandler = new AddressSelectionHandler();
 	}
 	
 	// Add Listener handlers here (with implements on this object)
@@ -103,9 +108,24 @@ public class Controller implements WindowListener {
 	public void initModel(Object initParam) {
 		return;
 	}
+	
+	// event handler for clicking on the address and displaying in textfield
+	public class AddressSelectionHandler implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			// TODO Auto-generated method stub
+			JTable table = view.receive.table;
+			String address= (String) table.getValueAt(table.getSelectedRow(), 1);
+			view.receive.address.setText(address);
+			
+		}
+
+	}
+	
 
 	// event handler for generating new key button
-	public class GenerateKeyHandler implements ActionListener{
+	public class GenerateKeyHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -115,7 +135,7 @@ public class Controller implements WindowListener {
 	}
 	
 	// event handler for send coin button in the send tab
-	public class SendCoinHandler implements ActionListener{
+	public class SendCoinHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e){
 			// send the address and amount

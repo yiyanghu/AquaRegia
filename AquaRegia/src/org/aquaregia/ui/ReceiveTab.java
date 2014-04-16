@@ -40,7 +40,7 @@ public class ReceiveTab extends JPanel {
 	
 	private JButton sendButton;
 	public JTextField address;
-	private JTable table;
+	public JTable table;
 	private AddressTableModel tableModel;
 	private String[] columnNames;
 	
@@ -127,6 +127,7 @@ public class ReceiveTab extends JPanel {
 	
 	public void addController(Controller controller){
 		sendButton.addActionListener(controller.gKHandler);
+		table.getSelectionModel().addListSelectionListener(controller.addressSelectionHandler);
 	}
 	
 	private class AddressTableModel extends DefaultTableModel {
