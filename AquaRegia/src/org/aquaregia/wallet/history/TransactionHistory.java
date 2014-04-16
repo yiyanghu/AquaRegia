@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.aquaregia.wallet.BitcoinAmount;
+
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
@@ -32,7 +34,8 @@ public class TransactionHistory extends ArrayList<SimpleTransactionDetails> {
 		// query constructor with running total
 		while (txIterator.hasNext()) {
 			Transaction tx = txIterator.next();
-			SimpleTransactionDetails td = new SimpleTransactionDetails(tx, wallet, params, total);
+			total = total.add(tx.getValue(wallet));
+			SimpleTransactionDetails td = new SimpleTransactionDetails(tx, wallet, params, new BitcoinAmount(total));
 			this.add(td);
 		}
 		// new -> old simple transaction details

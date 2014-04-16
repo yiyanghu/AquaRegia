@@ -121,7 +121,7 @@ public class SimpleTransactionDetails {
 			try {
 				byte[] pubkey = in.getScriptSig().getPubKey();
 				if (first) {
-					res += ">" + new Address(params, Utils.sha256hash160(pubkey)).toString();
+					res += "<" + new Address(params, Utils.sha256hash160(pubkey)).toString();
 					first = false;
 				}
 				else {
@@ -146,7 +146,7 @@ public class SimpleTransactionDetails {
 				res += "[to self]";
 			}
 			if (first) {
-				res += "<" + out.getScriptPubKey().getToAddress(params).toString();
+				res += ">" + out.getScriptPubKey().getToAddress(params).toString();
 				first = false;
 			}
 			else {
@@ -160,15 +160,15 @@ public class SimpleTransactionDetails {
 	// Constructors
 	
 	public SimpleTransactionDetails(Transaction tx, Wallet wallet, NetworkParameters params) {
-		this(tx, wallet, params, new BigInteger("0"));
+		this(tx, wallet, params, new BitcoinAmount(new BigInteger("0")));
 	}
 	
-	public SimpleTransactionDetails(Transaction tx, Wallet wallet, NetworkParameters params, BigInteger prevTotal) {
+	public SimpleTransactionDetails(Transaction tx, Wallet wallet, NetworkParameters params, BitcoinAmount total) {
 		this.tx = tx;
 		this.wallet = wallet;
 		this.params = params;
 		netBalanceChange = new BitcoinAmount(tx.getValue(wallet));
-		eventTotal = new BitcoinAmount(prevTotal.add(netBalanceChange));
+		eventTotal = total;
 		txTime = tx.getUpdateTime();
 		TransactionConfidence tc = tx.getConfidence();
 		confType = tc.getConfidenceType();
