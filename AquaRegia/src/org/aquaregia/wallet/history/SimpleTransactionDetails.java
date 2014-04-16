@@ -95,6 +95,7 @@ public class SimpleTransactionDetails {
 				byte[] pubkey = in.getScriptSig().getPubKey();
 				if (wallet.isPubKeyMine(pubkey)) {
 					desc += toOutputsDescribe(tx.getOutputs());
+					break;
 				}
 			}
 			catch (ScriptException e) { }
@@ -104,6 +105,7 @@ public class SimpleTransactionDetails {
 				if (desc.length() > 0)
 					desc += " ";
 				desc += fromInputsDescribe(tx.getInputs());
+				break;
 			}
 		}
 		if (desc.length() > 0)
