@@ -44,7 +44,7 @@ public class SendTab extends JPanel{
 	
 		addLabel(insets, "Address", 100, 40, 80, 30);
 		
-		addTextField(insets,"",200,40,250,30);
+		address = addTextField(insets,"",200,40,250,30);
 		
 		addLabel(insets, "Description", 100, 100, 80, 30);
 		
@@ -54,7 +54,7 @@ public class SendTab extends JPanel{
 		//TO-DO: hide the equation for $ if net connecting to the network
 		addLabel(insets, "Amount", 100, 160, 100, 30);
 
-		addTextField(insets,"",200,160,160,30);
+		amount = addTextField(insets,"",200,160,160,30);
 
 		addLabel(insets, "BTC", 380, 160, 30, 30);
 		

@@ -139,20 +139,24 @@ public class Controller implements WindowListener {
 		@Override
 		public void actionPerformed(ActionEvent e){
 			// send the address and amount
-			BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
-											view.send.amount.getText());
+
 			try {
-				
+				BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
+											view.send.amount.getText());
 				mwallet.simpleSendCoins(sendAmount, view.send.address.getText());
+			} catch (NumberFormatException e1) {
+				// error message window for wrong amount format
+				JOptionPane.showMessageDialog(view,"Please check your amount is a valid number of BTC.",
+						"Invalid Amount", JOptionPane.ERROR_MESSAGE);
 			} catch (AddressFormatException e1) {
 				// error message window for wrong address format
-				JOptionPane.showMessageDialog(view,"Invalid Address",
-						"Please check your address is in the correct format",JOptionPane.ERROR_MESSAGE);	
+				JOptionPane.showMessageDialog(view,"Please check your address is in the correct format.",
+						"Invalid Address", JOptionPane.ERROR_MESSAGE);	
 			} catch (InsufficientMoneyException e1) {
 				// error message window for inefficient money
 				BitcoinAmount missingValue = new BitcoinAmount(e1.missing);
-				JOptionPane.showMessageDialog(view,"Insufficient amount",
-						"You are missing " + missingValue.coins()+ " BTC",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view,"You are missing " + missingValue.coins()+ " BTC " +
+						" necessary to complete the transaction.","Insufficient amount", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
