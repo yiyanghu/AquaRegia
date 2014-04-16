@@ -28,6 +28,10 @@ import javax.swing.JTextField;
 public class SendTab extends JPanel{
 
 
+	private JButton sendButton;
+	public JTextField address;
+	public JTextField amount;
+
 	/*
 	 * This is the constructor for the sending tab
 	 * It has three components: address, description and amount
@@ -40,7 +44,7 @@ public class SendTab extends JPanel{
 	
 		addLabel(insets, "Address", 100, 40, 80, 30);
 		
-		addTextField(insets,"address should go here",200,40,250,30);
+		addTextField(insets,"",200,40,250,30);
 		
 		addLabel(insets, "Description", 100, 100, 80, 30);
 		
@@ -54,7 +58,7 @@ public class SendTab extends JPanel{
 
 		addLabel(insets, "BTC", 380, 160, 30, 30);
 		
-		JButton sendButton = new JButton("send");
+		sendButton = new JButton("send");
 		sendButton.setBounds(420+insets.left,160+insets.top,70,30);
 		this.add(sendButton);
 	
@@ -67,13 +71,17 @@ public class SendTab extends JPanel{
 		this.add(label);
 	}
 	
-	private void addTextField(Insets insets, String name, int left, int top,
+	private JTextField addTextField(Insets insets, String name, int left, int top,
 			int width, int height) {
 		JTextField text = new JTextField(name);
 		text.setBounds(left+insets.left,top+insets.top,width,height);
 		this.add(text);
+		return text;
 	}
 	
+	public void addController(Controller controller){
+		sendButton.addActionListener(controller.sCHandler);
+	}
 	
 	
 	
