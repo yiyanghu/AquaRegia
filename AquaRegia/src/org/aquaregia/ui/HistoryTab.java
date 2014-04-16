@@ -19,6 +19,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /**
@@ -28,6 +29,9 @@ import javax.swing.table.JTableHeader;
 
 
 public class HistoryTab extends JPanel {
+	
+	private JTable table;
+	private TransactionHistoryModel model;
 	
 	public HistoryTab(){
 		this.setLayout(null);
@@ -39,8 +43,7 @@ public class HistoryTab extends JPanel {
 	private void addHistoryTable(Insets insets){
 		String[] columnNames = {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
 		
-		Object[][] data = {{"finished","2014/04/01","test transaction","10","4000"},
-				{"in transit","2018/05/01","Bitcoin no joke","0.5","200"}};
+		Object[][] data = {};
 		
 		JTable table= new JTable(data,columnNames);
 		JTableHeader header = table.getTableHeader();
@@ -53,5 +56,14 @@ public class HistoryTab extends JPanel {
 		this.add(panel);
 
 	}
-
+	
+	private class TransactionHistoryModel extends DefaultTableModel{
+		@Override 
+		public boolean isCellEditable(int row, int col){
+				return false;
+		}
+	}
+		
 }
+
+
