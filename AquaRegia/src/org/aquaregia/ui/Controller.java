@@ -143,7 +143,14 @@ public class Controller implements WindowListener {
 			try {
 				BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
 											view.send.amount.getText());
-				mwallet.simpleSendCoins(sendAmount, view.send.address.getText());
+
+				String address = view.send.address.getText();
+				int okSend = JOptionPane.showConfirmDialog(view, "Are you sure you want to send "
+						+ sendAmount.coins() + " BTC?",
+						"Send Bitcoins?", JOptionPane.YES_NO_OPTION);
+				if (okSend != JOptionPane.YES_OPTION)
+					return;
+				mwallet.simpleSendCoins(sendAmount, address);
 			} catch (NumberFormatException e1) {
 				// error message window for wrong amount format
 				JOptionPane.showMessageDialog(view,"Please check your amount is a valid number of BTC.",
