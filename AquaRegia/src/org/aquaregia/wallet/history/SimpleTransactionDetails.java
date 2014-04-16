@@ -89,35 +89,22 @@ public class SimpleTransactionDetails {
 	 */
 	public String description() {
 		String desc = "";
-		boolean out1 = false;
-		for (TransactionOutput out : tx.getOutputs()) {
-			if (out.isMine(wallet)) {
-				desc += ">" + out.getScriptPubKey().getToAddress(params).toString();
-				if (!out1)
-					out1 = true;
-				else {
-					desc += "+...";
-					break;
-				}
-			}
-		}
-		boolean in1 = false;
+
 		for (TransactionInput in : tx.getInputs()) {
 			try {
 				byte[] pubkey = in.getScriptSig().getPubKey();
 				if (wallet.isPubKeyMine(pubkey)) {
-					if (desc.length() > 0)
-						desc += " ";
-					desc += "<" + new Address(params, Utils.sha256hash160(pubkey)).toString();
-					if (!in1)
-						in1 = true;
-					else {
-						desc += "+...";
-						break;
-					}
+					desc += toOutputsDescribe(tx.getOutputs());
 				}
 			}
 			catch (ScriptException e) { }
+		}
+		for (TransactionOutput out : tx.getOutputs()) {
+			if (out.isMine(wallet)) {
+				if (desc.length() > 0)
+					desc += " ";
+				desc += fromInputsDescribe(tx.getInputs());
+			}
 		}
 		if (desc.length() > 0)
 			return desc;
@@ -125,6 +112,50 @@ public class SimpleTransactionDetails {
 			return "(?) Unknown relatedness to your addresses";
 	}
 	
+	// Helpers
+	
+	private String fromInputsDescribe(List<TransactionInput> txi) {
+		String res = "";
+		boolean first = true;
+		for (TransactionInput in : txi) {
+			try {
+				byte[] pubkey = in.getScriptSig().getPubKey();
+				if (first) {
+					res += ">" + new Address(params, Utils.sha256hash160(pubkey)).toString();
+					first = false;
+				}
+				else {
+					res += "+...";
+					break;
+				}
+			}
+			catch (ScriptException e) { }
+			if (in.isCoinBase()) {
+				res = "(mined coins)";
+				break;
+			}
+		}
+		return (res.length() > 0) ? res : "(from [?] unable to decode)";
+	}
+	
+	private String toOutputsDescribe(List<TransactionOutput> txo) {
+		String res = "";
+		boolean first = true;
+		for (TransactionOutput out : tx.getOutputs()) {
+			if (out.isMine(wallet)) {
+				res += "[to self]";
+			}
+			if (first) {
+				res += "<" + out.getScriptPubKey().getToAddress(params).toString();
+				first = false;
+			}
+			else {
+				res += "+...";
+				break;
+			}
+		}
+		return (res.length() > 0) ? res : "(to [?] unable to decode)";
+	}
 	
 	// Constructors
 	
