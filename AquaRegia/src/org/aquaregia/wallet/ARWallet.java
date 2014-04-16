@@ -162,7 +162,7 @@ public class ARWallet extends Observable {
 	private void pushHistory() {
 		Object[] update = {
 				ModelUpdate.HISTORY,
-				new TransactionHistory(wallet)
+				new TransactionHistory(wallet, params)
 		};
 		setChanged();
 		notifyObservers(update);
