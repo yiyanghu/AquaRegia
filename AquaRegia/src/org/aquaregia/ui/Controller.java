@@ -98,16 +98,17 @@ public class Controller implements WindowListener {
 		return;
 	}
 
+	// event handler for generating new key button
 	public class GenerateKeyHandler implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			mwallet.addAddress();
 		}
 		
 	}
 	
+	// event handler for send coin button in the send tab
 	public class SendCoinHandler implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e){
@@ -115,13 +116,14 @@ public class Controller implements WindowListener {
 			BitcoinAmount sendAmount= new BitcoinAmount(BitcoinAmount.B.COIN,
 											view.send.amount.getText());
 			try {
+				
 				mwallet.simpleSendCoins(sendAmount, view.send.address.getText());
 			} catch (AddressFormatException e1) {
-				
+				// error message window for wrong address format
 				JOptionPane.showMessageDialog(view,"Invalid Address",
 						"Please check your address is in the correct format",JOptionPane.ERROR_MESSAGE);	
 			} catch (InsufficientMoneyException e1) {
-				
+				// error message window for inefficient money
 				BitcoinAmount missingValue = new BitcoinAmount(e1.missing);
 				JOptionPane.showMessageDialog(view,"Insufficient amount",
 						"You are missing " + missingValue.coins()+ " BTC",JOptionPane.ERROR_MESSAGE);
