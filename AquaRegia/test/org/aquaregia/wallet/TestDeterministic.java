@@ -10,15 +10,24 @@ import org.junit.Test;
 public class TestDeterministic {
 
 	@Test
-	public void testBin_slowsha() {
+	public void testGetMasterPrivateKey() {
 		String test1 = "This is something";
 		String expected1 = "b409b15310c82f3144ec7d3807ed407eda676e9bffe64d58450cd69f59280639";
-		slowshaHelper(expected1, test1);
+		getMasterPrivateKeyHelper(expected1, test1);
 
 		String test2 = "Aqua Regia is awesome!";
 		String expected2 = "fd72dcf2bcc215fb06cbf42f789c0b446e2f58ddfefdc2c5ed6426b62cc995c5";
-		slowshaHelper(expected2, test2);
+		getMasterPrivateKeyHelper(expected2, test2);
 
+	}
+	
+	@Test
+	public void doubleSHA256 () {
+		String in = "this is test";
+		String exp = "714c9da279846da919ede4ba4b90f9928fb3b501db0443301de1a6013d3af7fd";
+		byte[] dblhash = Deterministic.doubleSHA256(in.getBytes());
+		String res = Deterministic.bytesToHex(dblhash);
+		assertEquals(exp , res);
 	}
 	
 	@Test
@@ -40,7 +49,7 @@ public class TestDeterministic {
 	private void getPrivateKeyHelper(String expected, String seed) {
 		byte[] seedBytes = seed.getBytes();
 		byte[] output;
-		byte[] masterPrivateKey = Deterministic.bin_slowsha(seedBytes);
+		byte[] masterPrivateKey = Deterministic.getMasterPrivateKey(seedBytes);
 		
 		output = Deterministic.getPrivateKey(masterPrivateKey,3);
 		String result = Deterministic.bytesToHex(output);
@@ -48,11 +57,11 @@ public class TestDeterministic {
 		
 	}
 
-	public void slowshaHelper(String expected, String input) {
+	public void getMasterPrivateKeyHelper(String expected, String input) {
 		byte[] inputBytes = input.getBytes();
 		byte[] output;
 
-		output = Deterministic.bin_slowsha(inputBytes);
+		output = Deterministic.getMasterPrivateKey(inputBytes);
 		String result = Deterministic.bytesToHex(output);
 		assertEquals(expected, result);
 
