@@ -63,13 +63,13 @@ public class TestDeterministic {
 		byte[] masterPublicKey = Deterministic.privateToPublic(masterPrivateKey);
 		
 		// work from master private key to Nth public key
-		byte[] fourthPrivateKey = Deterministic.getPrivateKey(masterPrivateKey, addrNum);
-		byte[] fourthPublicKeyM1 = Deterministic.privateToPublic(fourthPrivateKey);
+		byte[] nthPrivateKey = Deterministic.getPrivateKey(masterPrivateKey, addrNum);
+		byte[] nthPublicKeyM1 = Deterministic.privateToPublic(nthPrivateKey);
 		
 		// work from master public key to get Nth public key
-		byte[] fourthPublicKeyM2 = Deterministic.getPublicKey(masterPublicKey, addrNum);
+		byte[] nthPublicKeyM2 = Deterministic.getPublicKey(masterPublicKey, addrNum);
 		
-		assertTrue(Arrays.equals(fourthPublicKeyM1, fourthPublicKeyM2));
+		assertTrue(Arrays.equals(nthPublicKeyM1, nthPublicKeyM2));
 	}
 	
 	private void getPublicKeyHelper(String expected, String masterPublicKeyHex, int n) {
