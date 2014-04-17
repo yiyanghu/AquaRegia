@@ -42,16 +42,16 @@ public class TestDeterministic {
 	public void testGetPrivateKey() {
 		String seed = "0123456789abcdef0123456789abcdef";
 		String expected1 = "e2a8eb8c2c246060f5fba60243d926855c088d9ab2e5a86b0c7b658c6be2ca9d";
-		getPrivateKeyHelper(expected1,seed);
+		getPrivateKeyHelper(expected1,seed, 3);
 		
 	}
 
-	private void getPrivateKeyHelper(String expected, String seed) {
+	private void getPrivateKeyHelper(String expected, String seed, int n) {
 		byte[] seedBytes = seed.getBytes();
 		byte[] output;
 		byte[] masterPrivateKey = Deterministic.getMasterPrivateKey(seedBytes);
 		
-		output = Deterministic.getPrivateKey(masterPrivateKey,3);
+		output = Deterministic.getPrivateKey(masterPrivateKey, n);
 		String result = Deterministic.bytesToHex(output);
 		assertEquals(expected,result);
 		
