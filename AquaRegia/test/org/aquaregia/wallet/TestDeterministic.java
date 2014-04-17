@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -46,6 +47,38 @@ public class TestDeterministic {
 		
 	}
 
+	
+	@Test
+	public void testGetPublicKey() {
+		String masterPublicKeyHex = "7a4a6acb200cb895e5c518fe1d5c094de578cf4e86daf61e4e283a22456551cf3a25f28e9ed6316de40e5cb6e33313e80898e1f3e0011e84dcaeb6c6e260328a";
+		String expectedPublicKey = "b0d852dd745291d16cc2938636a92ec363e10fcfcea2cf772035cf5d639bfa7f7ec76f2dae08db6aade0b11932f676ff811378eea9dee62c7767915b2fdad351";
+		getPublicKeyHelper(expectedPublicKey, masterPublicKeyHex, 4);
+	}
+	
+	@Test
+	public void keyAdditionProperty() {
+		String seed = "0123456789abcdef0123456789abcdef";
+		int addrNum = 4;
+		byte[] masterPrivateKey = Deterministic.getMasterPrivateKey(seed.getBytes());
+		byte[] masterPublicKey = Deterministic.privateToPublic(masterPrivateKey);
+		
+		// work from master private key to Nth public key
+		byte[] fourthPrivateKey = Deterministic.getPrivateKey(masterPrivateKey, addrNum);
+		byte[] fourthPublicKeyM1 = Deterministic.privateToPublic(fourthPrivateKey);
+		
+		// work from master public key to get Nth public key
+		byte[] fourthPublicKeyM2 = Deterministic.getPublicKey(masterPublicKey, addrNum);
+		
+		assertTrue(Arrays.equals(fourthPublicKeyM1, fourthPublicKeyM2));
+	}
+	
+	private void getPublicKeyHelper(String expected, String masterPublicKeyHex, int n) {
+		byte[] masterPublicKey = Deterministic.hexStringToByteArray(masterPublicKeyHex);
+		byte[] publicKey = Deterministic.getPublicKey(masterPublicKey, n);
+		String result = Deterministic.bytesToHex(publicKey);
+		assertEquals(expected, result);
+	}
+	
 	private void getPrivateKeyHelper(String expected, String seed, int n) {
 		byte[] seedBytes = seed.getBytes();
 		byte[] output;
