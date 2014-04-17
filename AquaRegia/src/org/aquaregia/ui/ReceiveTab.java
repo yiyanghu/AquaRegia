@@ -61,7 +61,7 @@ public class ReceiveTab extends JPanel {
 		address = addTextField(insets,"",200,40,250,30);
 		
 		
-		sendButton = new JButton("generate key");
+		sendButton = new JButton("generate address");
 		sendButton.setBounds(500+insets.left,40+insets.top,150,30);
 		this.add(sendButton);
 		

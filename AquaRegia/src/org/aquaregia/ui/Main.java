@@ -1,5 +1,9 @@
 package org.aquaregia.ui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Executor;
 
 import javax.swing.SwingUtilities;
@@ -36,7 +40,7 @@ public class Main {
 		controller.initModel(INIT_PARAM);
 		
 		view.addController(controller);
-	}
+	}	
 	
 	public static void main(String[] args) {
 		BriefLogFormatter.init();

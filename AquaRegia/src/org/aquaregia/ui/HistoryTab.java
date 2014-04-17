@@ -59,7 +59,7 @@ public class HistoryTab extends JPanel {
 				
 		JPanel panel= new JPanel();
 		panel.setLayout(new BorderLayout());
-		panel.setBounds(5+insets.left,5+insets.top, 650,450);
+		panel.setBounds(5+insets.left,5+insets.top, 660,520);
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		panel.add(tableScrollPane,BorderLayout.CENTER);
