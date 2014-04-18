@@ -8,6 +8,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.params.MainNetParams;
+
 public class TestDeterministic {
 
 	@Test

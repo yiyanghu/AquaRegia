@@ -65,11 +65,6 @@ public class Deterministic {
 		return getPublicKey(masterPublicKey, n, 0);
 	}
 	
-	public static byte[] offsetPrivatePartialKey(int n, int isChangeAddr, byte[] masterPublicKey) {
-		String indexCode = Integer.toString(n)+":"+Integer.toString(isChangeAddr)+":";
-		return doubleSHA256(byteArrayConcat(indexCode.getBytes(), masterPublicKey));
-	}
-	
 	public static byte[] addPrivateKeys(byte[] key1, byte[] key2) {
 		BigInteger key1Int = new BigInteger(1, key1);
 		BigInteger key2Int = new BigInteger(1, key2);
@@ -93,21 +88,34 @@ public class Deterministic {
 		return byteArrayConcat(resleft, resright);
 	}
 
-	public static byte[] byteArrayConcat(byte[] first, byte[] second) {
-		byte[] result = new byte[first.length + second.length];
-		System.arraycopy(first, 0, result, 0, first.length);
-		System.arraycopy(second,0,result,first.length,second.length);
-		return result;
-	}
-	
-	public static String bytesToHex(byte[] bytes) {
-		return DatatypeConverter.printHexBinary(bytes).toLowerCase();
-	}
-	
 	public static byte[] privateToPublic(byte[] privateKey) {
 		ECKey keyPair = new ECKey(privateKey, null);	
 		byte [] result = keyPair.getPubKey(); 
 		return Arrays.copyOfRange(result, 1, result.length);
+	}
+
+	/**
+	 * Construct a wallet key you can spend from if you input a public key.
+	 * Construct a wallet key you can only watch if you input a private key.
+	 * @param key - (public|private) key
+	 * @return
+	 */
+	public static ECKey keyConstruct(byte[] key) {
+		if (key.length == 32) {
+			// private key
+			return new ECKey(key, null);
+		}
+		else if (key.length == 64) {
+			// public key
+			final byte[] hex4 = {4};
+			return new ECKey(null, byteArrayConcat(hex4, key));
+		}
+		else
+			throw new RuntimeException("Key format not in a deterministic relevant format");
+	}
+	
+	public static String bytesToHex(byte[] bytes) {
+		return DatatypeConverter.printHexBinary(bytes).toLowerCase();
 	}
 	
 	public static byte[] hexStringToByteArray(String s) {
@@ -134,7 +142,19 @@ public class Deterministic {
 		return input;
 	}
 	
-	public static BigInteger[] pairAdd(BigInteger[] a, BigInteger[] b) {
+	private static byte[] byteArrayConcat(byte[] first, byte[] second) {
+		byte[] result = new byte[first.length + second.length];
+		System.arraycopy(first, 0, result, 0, first.length);
+		System.arraycopy(second,0,result,first.length,second.length);
+		return result;
+	}
+
+	private static byte[] offsetPrivatePartialKey(int n, int isChangeAddr, byte[] masterPublicKey) {
+		String indexCode = Integer.toString(n)+":"+Integer.toString(isChangeAddr)+":";
+		return doubleSHA256(byteArrayConcat(indexCode.getBytes(), masterPublicKey));
+	}
+
+	private static BigInteger[] pairAdd(BigInteger[] a, BigInteger[] b) {
 		if (isinf(a)) {
 			BigInteger[] res = {b[0],b[1]};
 			return res;
@@ -157,6 +177,7 @@ public class Deterministic {
 		//m = ((b[1]-a[1]) * inv(b[0]-a[0],P)) % P
 		BigInteger ml = b[1].subtract(a[1]);
 		BigInteger mr = modInverse(b[0].subtract(a[0]), P);
+		//BigInteger mr = b[0].subtract(a[0]).modInverse(P);
 		BigInteger m = ml.multiply(mr).mod(P);
 		
 		//x = (m*m-a[0]-b[0]) % P
@@ -173,7 +194,7 @@ public class Deterministic {
 		return result;
 	}
 	
-	public static BigInteger[] pairDouble(BigInteger[] a) {
+	private static BigInteger[] pairDouble(BigInteger[] a) {
 		if (isinf(a)) {
 			BigInteger[] zeros = {BigInteger.ZERO, BigInteger.ZERO};
 			return zeros;
@@ -200,7 +221,7 @@ public class Deterministic {
 		return result;
 	}
 	
-	public static BigInteger modInverse(BigInteger a, BigInteger n) {
+	private static BigInteger modInverse(BigInteger a, BigInteger n) {
         BigInteger lm = BigInteger.ONE, hm = BigInteger.ZERO;
         BigInteger low = a.mod(n), high = n;
         
@@ -215,7 +236,7 @@ public class Deterministic {
         return lm.mod(n);
 	}
 	
-	public static boolean isinf(BigInteger[] p) {
+	private static boolean isinf(BigInteger[] p) {
 		return (p[0].equals(BigInteger.ZERO) && p[1].equals(BigInteger.ZERO));
 	}
 	
