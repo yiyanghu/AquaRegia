@@ -10,6 +10,15 @@ import javax.xml.bind.*;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Utils;
 
+
+
+/**
+ * Deterministic Wallet
+ * Generate Master Private Key or Mater Public Key
+ * @author Yiyang Hu and Steve Halm
+ */
+
+
 public class Deterministic {
 	
 	public static final BigInteger N = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
