@@ -285,22 +285,9 @@ public class Mnemonic {
 	}
 
 	public static String encode(String seed) {
-
 		return join(encodeToList(seed)," ");
 	}
 
-	public static String join(Collection s, String delimiter) {
-		StringBuffer buffer = new StringBuffer();
-		Iterator iter = s.iterator();
-		while (iter.hasNext()) {
-			buffer.append(iter.next());
-			if (iter.hasNext()) {
-				buffer.append(delimiter);
-			}
-		}
-		return buffer.toString();
-	}
-	
 	public static String decode(String message) {
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(message.split(" ")));
 		final ArrayList<String> wordListArray = new ArrayList<String>(Arrays.asList(wordList));
@@ -322,6 +309,18 @@ public class Mnemonic {
 			output += Utils.bytesToHexString(Utils.bigIntegerToBytes(sum, 4));
 		}
 		return output;
+	}
+
+	public static String join(Collection s, String delimiter) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator iter = s.iterator();
+		while (iter.hasNext()) {
+			buffer.append(iter.next());
+			if (iter.hasNext()) {
+				buffer.append(delimiter);
+			}
+		}
+		return buffer.toString();
 	}
 
 }

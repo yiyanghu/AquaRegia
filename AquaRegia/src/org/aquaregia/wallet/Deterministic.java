@@ -60,7 +60,6 @@ public class Deterministic {
 	}
 	
 	public static byte[] getPrivateKey(byte[] masterPrivateKey,int n) {
-		System.out.println(modInverse(new BigInteger("23740923482303984"),new BigInteger("23094829048")));
 		return getPrivateKey(masterPrivateKey, n, 0);		
 	}
 	
