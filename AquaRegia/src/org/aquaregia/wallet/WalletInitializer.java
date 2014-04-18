@@ -13,4 +13,8 @@ public class WalletInitializer extends WalletAppKit {
     public WalletInitializer(NetworkParameters params, File directory, String filePrefix) {
     	super(params, directory, filePrefix);
     }
+    
+    //@Override
+    
+    
 }
