@@ -1,10 +1,13 @@
 package org.aquaregia.wallet;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import com.google.bitcoin.core.Utils;
 
 /**
  *  This class provides word choices
@@ -257,7 +260,7 @@ public class Mnemonic {
 			"sunset", "suspend", "sympathy", "thigh", "throne", "total",
 			"unseen", "weapon", "weary" };
 
-	final public static int N = 1626;
+	final public static long N = 1626;
 
 	/**
 	 * returns the string array of 12 words 
@@ -269,10 +272,10 @@ public class Mnemonic {
 		int iteration = seed.length() / 8;
 		for (int i = 0; i < iteration; i++) {
 			String word = seed.substring(8 * i, 8 * i + 8);
-			int index = Integer.parseInt(word, 16);
-			int index1 = index % N;
-			int index2 = ((index / N) + index1) % N;
-			int index3 = ((index / N / N) + index2) % N;
+			long index = Long.parseLong(word, 16);
+			int index1 = (int) (index % N);
+			int index2 = (int) (((index / N) + index1) % N);
+			int index3 = (int) (((index / N / N) + index2) % N);
 			out.add(wordList[index1]);
 			out.add(wordList[index2]);
 			out.add(wordList[index3]);
@@ -300,22 +303,24 @@ public class Mnemonic {
 	
 	public static String decode(String message) {
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(message.split(" ")));
-		ArrayList<String> wordListArray = new ArrayList<String>(Arrays.asList(wordList));
+		final ArrayList<String> wordListArray = new ArrayList<String>(Arrays.asList(wordList));
 		String output = "";
 		for(int i=0;i<input.size()/3;i++){
 			String word1 = input.get(3*i);
 			String word2 = input.get(3*i+1);
 			String word3 = input.get(3*i+2);
-			int position1 = wordListArray.indexOf(word1);
-			int position2 = (wordListArray.indexOf(word2))%N;
-			int position3 = (wordListArray.indexOf(word3))%N;
+
+			BigInteger p1 = new BigInteger("" + wordListArray.indexOf(word1));
+			BigInteger p2 = new BigInteger("" + ((wordListArray.indexOf(word2))%N));
+			BigInteger p3 = new BigInteger("" + ((wordListArray.indexOf(word3))%N));
 			
-			int sum = position1 + N*((position2-position1)%N)+N*N*((position3-position2)%N);
+			final BigInteger n = new BigInteger("" + N);
 			
+			BigInteger sum = p1.add(n.multiply(p2.subtract(p1).mod(n)))
+					.add(n.multiply(n).multiply(p3.subtract(p2).mod(n)));
 			
+			output += Utils.bytesToHexString(Utils.bigIntegerToBytes(sum, 4));
 		}
-		
-		
 		return output;
 	}
 
