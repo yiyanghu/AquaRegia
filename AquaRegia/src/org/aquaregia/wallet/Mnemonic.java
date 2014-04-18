@@ -12,7 +12,7 @@ import com.google.bitcoin.core.Utils;
 /**
  *  This class provides word choices
  *  and related functions that can encode and decode a message
- * @author Yiyang Hu
+ * @author Yiyang Hu and Steve Halm
  *
  */
 public class Mnemonic {
@@ -288,6 +288,11 @@ public class Mnemonic {
 		return join(encodeToList(seed)," ");
 	}
 
+	/**
+	 * 
+	 * @param message - the given 12 words
+	 * @return the string of the seed in hex format
+	 */
 	public static String decode(String message) {
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(message.split(" ")));
 		final ArrayList<String> wordListArray = new ArrayList<String>(Arrays.asList(wordList));
@@ -310,7 +315,14 @@ public class Mnemonic {
 		}
 		return output;
 	}
-
+	
+	
+	/**
+	 * 
+	 * @param s - would the the collection of string
+	 * @param delimiter - potentially adding the space in between
+	 * @return the new long string with space between words
+	 */
 	public static String join(Collection s, String delimiter) {
 		StringBuffer buffer = new StringBuffer();
 		Iterator iter = s.iterator();

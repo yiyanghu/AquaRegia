@@ -6,6 +6,8 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -19,70 +21,97 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-
 /**
  * Draw the send tab
+ * 
  * @author Yiyang Hu
  */
 
-public class SendTab extends JPanel{
-
+public class SendTab extends JPanel {
 
 	private JButton sendButton;
 	public JTextField address;
 	public JTextField amount;
 
 	/*
-	 * This is the constructor for the sending tab
-	 * It has three components: address, description and amount
-	 * It also has a send button
+	 * This is the constructor for the sending tab It has three components:
+	 * address, description and amount It also has a send button
 	 */
-	public SendTab(){
-		
+	public SendTab() {
+
 		this.setLayout(null);
 		Insets insets = this.getInsets();
-	
+
 		addLabel(insets, "Address", 100, 40, 80, 30);
-		
-		address = addTextField(insets,"",200,40,250,30);
-		
+
+		address = addTextField(insets, "", 200, 40, 250, 30);
+
 		addLabel(insets, "Description", 100, 100, 80, 30);
-		
-		addTextField(insets,"describe the transaction here",200,100,350,30);
-		
-		//creating the amount with textfield
-		//TO-DO: hide the equation for $ if net connecting to the network
+
+		addTextField(insets, "describe the transaction here", 200, 100, 350, 30);
+
+		// creating the amount with textfield
+		// TO-DO: hide the equation for $ if net connecting to the network
 		addLabel(insets, "Amount", 100, 160, 100, 30);
 
-		amount = addTextField(insets,"",200,160,160,30);
+		amount = addTextField(insets, "", 200, 160, 160, 30);
 
 		addLabel(insets, "BTC", 380, 160, 30, 30);
-		
+
 		sendButton = new JButton("send");
-		sendButton.setBounds(420+insets.left,160+insets.top,70,30);
+		sendButton.setBounds(420 + insets.left, 160 + insets.top, 70, 30);
 		this.add(sendButton);
-	
+
 	}
 
 	private void addLabel(Insets insets, String name, int left, int top,
 			int width, int height) {
 		JLabel label = new JLabel(name);
-		label.setBounds(left+insets.left,top+insets.top,width,height);
+		label.setBounds(left + insets.left, top + insets.top, width, height);
 		this.add(label);
 	}
-	
-	private JTextField addTextField(Insets insets, String name, int left, int top,
-			int width, int height) {
-		JTextField text = new JTextField(name);
-		text.setBounds(left+insets.left,top+insets.top,width,height);
+
+	private JTextField addTextField(Insets insets, final String name, int left,
+			int top, int width, int height) {
+		final JTextField text = new JTextField(name);
+		text.setBounds(left + insets.left, top + insets.top, width, height);
+		text.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				text.setText("");
+
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// do nothing
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// do nothing
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// do nothing
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// do nothing
+
+			}
+
+		});
+
 		this.add(text);
 		return text;
 	}
-	
-	public void addController(Controller controller){
+
+	public void addController(Controller controller) {
 		sendButton.addActionListener(controller.sCHandler);
 	}
-	
-	
-	
+
 }

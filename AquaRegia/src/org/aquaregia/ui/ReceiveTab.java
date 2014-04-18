@@ -6,7 +6,11 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -86,10 +90,46 @@ public class ReceiveTab extends JPanel {
 		this.add(label);
 	}
 	
-	private JTextField addTextField(Insets insets, String name, int left, int top,
+	private JTextField addTextField(Insets insets, final String name, int left, int top,
 			int width, int height) {
-		JTextField text = new JTextField(name);
+		final JTextField text = new JTextField(name);
 		text.setBounds(left+insets.left,top+insets.top,width,height);
+		
+		text.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				text.setText("");
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// do nothing
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// do nothing
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// do nothing
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// do nothing
+				
+			}
+
+			
+		});
+		
 		this.add(text);
 		return text;
 	}
