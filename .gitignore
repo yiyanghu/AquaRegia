@@ -2,3 +2,4 @@ bin/
 *.wallet
 *.spvchain
 .metadata
+*.old
