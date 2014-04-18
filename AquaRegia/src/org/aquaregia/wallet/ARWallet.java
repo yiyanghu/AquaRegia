@@ -56,7 +56,7 @@ public class ARWallet extends Observable {
 	 * Initialize with default.wallet
 	 */
 	public ARWallet() {
-		initWallet(WALLET_DEFAULT);
+		this(WALLET_DEFAULT);
 	}
 	
 	/**
@@ -64,16 +64,25 @@ public class ARWallet extends Observable {
 	 * @param walletName - open walletName + '.wallet'
 	 */
 	public ARWallet(String walletName) {
-		initWallet(walletName);
+		initWallet(walletName, new File("."));
+	}
+	
+	/**
+	 * Initialize a given wallet in selected directory
+	 * @param walletName - open walletName + '.wallet'
+	 * @param parentDirectory - (of file)
+	 */
+	public ARWallet(String walletName, File parentDirectory) {
+		initWallet(walletName, parentDirectory);
 	}
 	
 	/**
 	 * Open wallet
 	 * @param walletName
 	 */
-	private void initWallet(String walletName) {
+	private void initWallet(String walletName, File directory) {
 		assert(walletName != null);
-		walletGen = new WalletInitializer(params, new File("."),  walletName);
+		walletGen = new WalletInitializer(params, directory,  walletName);
 		
 		// configure wallet service
 		walletGen.setDownloadListener(new UIDownloadListener())

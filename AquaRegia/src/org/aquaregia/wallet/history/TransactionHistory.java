@@ -10,6 +10,7 @@ import org.aquaregia.wallet.BitcoinAmount;
 
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 
 /**
@@ -35,6 +36,8 @@ public class TransactionHistory extends ArrayList<SimpleTransactionDetails> {
 		while (txIterator.hasNext()) {
 			Transaction tx = txIterator.next();
 			total = total.add(tx.getValue(wallet));
+			//System.out.println(tx.getHashAsString());
+			//System.out.println(Utils.bytesToHexString(tx.bitcoinSerialize()));
 			SimpleTransactionDetails td = new SimpleTransactionDetails(tx, wallet, params, new BitcoinAmount(total));
 			this.add(td);
 		}

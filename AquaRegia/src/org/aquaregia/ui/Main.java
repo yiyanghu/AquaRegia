@@ -39,10 +39,13 @@ public class Main {
 		}
 	};
 
-	private ARWallet mwallet = new ARWallet();
-	private WalletView view = new WalletView();
+	private ARWallet mwallet;
+	private WalletView view;
 
 	public Main() {
+		Object[] fileAndDir = openWalletFile();
+		mwallet = new ARWallet((String)fileAndDir[0], (File)fileAndDir[1]);
+		view = new WalletView();
 		Threading.USER_THREAD = runInUIThread;
 		mwallet.addObserver(view);
 
@@ -57,16 +60,17 @@ public class Main {
 	/**
 	 * This function would open a wallet from the user
 	 * or exit if nothing to be opened
-	 * @return the name of the opened wallet
+	 * @return the name of the opened wallet and directory
 	 */
-	public String openWalletFile() {
+	public Object[] openWalletFile() {
 		String wallet = "";
-		File parentDirectory;
+		File parentDirectory = null;
 		
 
 		// create a file chooser
 		final JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setCurrentDirectory(new File("."));
+		fileDialog.setAcceptAllFileFilterUsed(false);
 		
 		// set file filter
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
@@ -80,6 +84,7 @@ public class Main {
 			wallet = file.getName();
 			
 			if (! wallet.endsWith(".wallet")){
+				System.out.println("somehow user didn't choose a wallet file");
 				System.exit(0);
 			}
 			else{
@@ -91,7 +96,7 @@ public class Main {
 			System.exit(0);
 		}
 
-		return wallet;
+		return new Object[] {wallet, parentDirectory};
 	}
 
 	public static void main(String[] args) {
