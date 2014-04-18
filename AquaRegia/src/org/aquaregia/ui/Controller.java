@@ -22,7 +22,7 @@ import com.google.bitcoin.core.Transaction;
 
 /**
  * Binds wallet implementation to interface
- * @author Stephen Halm
+ * @author Stephen Halm and Yiyang Hu
  */
 public class Controller implements WindowListener {
 
@@ -115,7 +115,6 @@ public class Controller implements WindowListener {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			// TODO Auto-generated method stub
 			JTable table = view.receive.table;
 			String address= (String) table.getValueAt(table.getSelectedRow(), 1);
 			view.receive.address.setText(address);
