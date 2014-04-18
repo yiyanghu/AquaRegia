@@ -21,10 +21,17 @@ import com.google.bitcoin.core.Utils;
 
 public class Deterministic {
 	
+	// Elliptic curve constants for secp256k1
+	
 	public static final BigInteger N = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
 	public static final BigInteger P = new BigInteger("115792089237316195423570985008687907853269984665640564039457584007908834671663");
 	public static final BigInteger A = new BigInteger("0");
 	
+	/**
+	 * Generate a master private key from a wallet seed
+	 * @param seed - wallet seed (hex string)
+	 * @return private key (do not store funds in this master key!)
+	 */
 	public static byte[] getMasterPrivateKey(byte[] seed) {
 		byte[] original = seed;	
 		// hash seed with SHA256 100,000 times
@@ -43,7 +50,7 @@ public class Deterministic {
 	}
 
 	/**
-	 * This function generates master public key from a wallet seed
+	 * Generate a master public key from a wallet seed
 	 * @param seed - a wallet seed
 	 * @return master public key (no 0x04 byte at front)
 	 */
@@ -53,26 +60,58 @@ public class Deterministic {
 		
 	}
 
+	/**
+	 * Get the nth private key based from the master private key.
+	 * @param masterPrivateKey - master private key for the wallet
+	 * @param n - the index into the key chain
+	 * @param isChangeAddr - (whether to use the receive or change address chain)
+	 * @return nth private key
+	 */
 	public static byte[] getPrivateKey(byte[] masterPrivateKey, int n, int isChangeAddr) {
 		byte[] masterPublicKey = privateToPublic(masterPrivateKey);
 		byte[] offset = offsetPrivatePartialKey(n, isChangeAddr, masterPublicKey);
 		return addPrivateKeys(masterPrivateKey, offset);
 	}
 	
+	/**
+	 * Get the nth private key based form the master private key. (In receive chain)
+	 * @param masterPrivateKey - master private key for the wallet
+	 * @param n - the index into the key chain.
+	 * @return nth private key
+	 */
 	public static byte[] getPrivateKey(byte[] masterPrivateKey,int n) {
 		return getPrivateKey(masterPrivateKey, n, 0);		
 	}
 	
+	/**
+	 * Get the nth public key based from the master public key.
+	 * @param masterPublicKey - master public key for the wallet
+	 * @param n - the index into the key chain
+	 * @param isChangeAddr - (whether to use the receive or change address chain)
+	 * @return nth public key
+	 */
 	public static byte[] getPublicKey(byte[] masterPublicKey, int n, int isChangeAddr) {
 		byte[] offsetPrivate = offsetPrivatePartialKey(n, isChangeAddr, masterPublicKey);
 		byte[] offsetPublic = privateToPublic(offsetPrivate);
 		return addPublicKeys(masterPublicKey, offsetPublic);
 	}
 	
+	/**
+	 * Get the nth public key based from the master public key.
+	 * @param masterPublicKey - master public key for the wallet
+	 * @param n - the index into the key chain
+	 * @return nth public key
+	 */
 	public static byte[] getPublicKey(byte[] masterPublicKey, int n) {
 		return getPublicKey(masterPublicKey, n, 0);
 	}
 	
+	/**
+	 * Add two private keys together (k1 + k2) mod N
+	 * @param key1 - private key 1
+	 * @param key2 - private key 2
+	 * @return private key sum
+	 */
 	public static byte[] addPrivateKeys(byte[] key1, byte[] key2) {
 		BigInteger key1Int = new BigInteger(1, key1);
 		BigInteger key2Int = new BigInteger(1, key2);
@@ -81,6 +120,12 @@ public class Deterministic {
 		return Utils.bigIntegerToBytes(sum, 32);
 	}
 
+	/**
+	 * "Add" two public key together (more complicated than actual addition)
+	 * @param masterPublicKey - the master public key
+	 * @param offsetPublic - offset key
+	 * @return sum of the two keys
+	 */
 	public static byte[] addPublicKeys(byte[] masterPublicKey, byte[] offsetPublic) {
 		BigInteger mpk1 = new BigInteger(1, Arrays.copyOfRange(masterPublicKey, 0, 32));
 		BigInteger mpk2 = new BigInteger(1, Arrays.copyOfRange(masterPublicKey, 32, 64));
@@ -96,6 +141,11 @@ public class Deterministic {
 		return byteArrayConcat(resleft, resright);
 	}
 
+	/**
+	 * Gets the public key correspoding to the input private key (with no 0x04 header byte)
+	 * @param privateKey - input private key
+	 * @return public key (no 0x04 header byte)
+	 */
 	public static byte[] privateToPublic(byte[] privateKey) {
 		ECKey keyPair = new ECKey(privateKey, null);	
 		byte [] result = keyPair.getPubKey(); 
@@ -122,10 +172,20 @@ public class Deterministic {
 			throw new RuntimeException("Key format not in a deterministic relevant format");
 	}
 	
+	/**
+	 * Helper function to turn byte array into hex string
+	 * @param bytes - byte array
+	 * @return hex string
+	 */
 	public static String bytesToHex(byte[] bytes) {
 		return DatatypeConverter.printHexBinary(bytes).toLowerCase();
 	}
 	
+	/**
+	 * Helper function to turn hex string into byte array
+	 * @param s - hex string
+	 * @return byte array
+	 */
 	public static byte[] hexStringToByteArray(String s) {
 	    int len = s.length();
 	    byte[] data = new byte[len / 2];
@@ -136,6 +196,11 @@ public class Deterministic {
 	    return data;
 	}
 	
+	/**
+	 * Apply SHA256(SHA256(input))
+	 * @param input - data to hash
+	 * @return double SHA256 hash
+	 */
 	public static byte[] doubleSHA256(byte[] input) {
 		for (int i = 0; i < 2 ; i++) {
 			MessageDigest md = null;
@@ -150,6 +215,12 @@ public class Deterministic {
 		return input;
 	}
 	
+	/**
+	 * Helper function to concatenate two byte arrays
+	 * @param first - 1st byte array
+	 * @param second - 2nd byte array
+	 * @return joined array
+	 */
 	private static byte[] byteArrayConcat(byte[] first, byte[] second) {
 		byte[] result = new byte[first.length + second.length];
 		System.arraycopy(first, 0, result, 0, first.length);
@@ -157,11 +228,24 @@ public class Deterministic {
 		return result;
 	}
 
+	/**
+	 * Get the offset private key basted on wallet chain parameters
+	 * @param n - nth key
+	 * @param isChangeAddr - 0=receive 1=change
+	 * @param masterPublicKey - coresponding master public key
+	 * @return ofsset private key
+	 */
 	private static byte[] offsetPrivatePartialKey(int n, int isChangeAddr, byte[] masterPublicKey) {
 		String indexCode = Integer.toString(n)+":"+Integer.toString(isChangeAddr)+":";
 		return doubleSHA256(byteArrayConcat(indexCode.getBytes(), masterPublicKey));
 	}
 
+	/**
+	 * Add two secp256k1 elliptic curve keys (each key has two element numbers "pairs")
+	 * @param a - first key
+	 * @param b - second key
+	 * @return key sum
+	 */
 	private static BigInteger[] pairAdd(BigInteger[] a, BigInteger[] b) {
 		if (isinf(a)) {
 			BigInteger[] res = {b[0],b[1]};
@@ -202,6 +286,11 @@ public class Deterministic {
 		return result;
 	}
 	
+	/**
+	 * When a secp256k1 key is added to itself, we use this method to double it.
+	 * @param a - key
+	 * @return doubled key
+	 */
 	private static BigInteger[] pairDouble(BigInteger[] a) {
 		if (isinf(a)) {
 			BigInteger[] zeros = {BigInteger.ZERO, BigInteger.ZERO};
@@ -229,6 +318,12 @@ public class Deterministic {
 		return result;
 	}
 	
+	/**
+	 * Find modular inverse of at = 1 mod n
+	 * @param a in the above formula
+	 * @param n in the above formula
+	 * @return t in the above formula
+	 */
 	private static BigInteger modInverse(BigInteger a, BigInteger n) {
         BigInteger lm = BigInteger.ONE, hm = BigInteger.ZERO;
         BigInteger low = a.mod(n), high = n;
@@ -244,6 +339,11 @@ public class Deterministic {
         return lm.mod(n);
 	}
 	
+	/**
+	 * Trivial condition on secp256k1 public key math 
+	 * @param p - key
+	 * @return both elements of pair are zero
+	 */
 	private static boolean isinf(BigInteger[] p) {
 		return (p[0].equals(BigInteger.ZERO) && p[1].equals(BigInteger.ZERO));
 	}
