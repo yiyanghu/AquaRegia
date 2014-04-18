@@ -260,7 +260,7 @@ public class Mnemonic {
 			"sunset", "suspend", "sympathy", "thigh", "throne", "total",
 			"unseen", "weapon", "weary" };
 
-	final public static long N = 1626;
+	final public static int N = 1626;
 
 	/**
 	 * returns the string array of 12 words 
