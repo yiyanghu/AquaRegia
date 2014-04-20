@@ -3,6 +3,8 @@ package org.aquaregia.wallet;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 import javax.xml.bind.*;
@@ -26,6 +28,15 @@ public class Deterministic {
 	public static final BigInteger N = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
 	public static final BigInteger P = new BigInteger("115792089237316195423570985008687907853269984665640564039457584007908834671663");
 	public static final BigInteger A = new BigInteger("0");
+	
+	/**
+	 * Create a random deterministic wallet seed
+	 * @return hex string of 16 bytes
+	 */
+	public static String randomSeed() {
+		SecureRandom sr = new SecureRandom();
+		return Utils.bytesToHexString(sr.generateSeed(16));
+	}
 	
 	/**
 	 * Generate a master private key from a wallet seed

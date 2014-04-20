@@ -57,7 +57,7 @@ public class Mnemonic {
 		if (! Utils.bytesToHexString(digest).equals(WORDLISTHASH))
 			throw new RuntimeException(modified);
 		
-		if (wlist.size() != 1626) {
+		if (wlist.size() != N) {
 			throw new RuntimeException(modified);
 		}
 		
