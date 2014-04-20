@@ -164,8 +164,8 @@ public class Deterministic {
 	}
 
 	/**
-	 * Construct a wallet key you can spend from if you input a public key.
-	 * Construct a wallet key you can only watch if you input a private key.
+	 * Construct a wallet key you can only watch if you input a public key.
+	 * Construct a wallet key you can spend from if you input a private key.
 	 * @param key - (public|private) key
 	 * @return
 	 */
