@@ -142,7 +142,7 @@ public class Deterministic {
 	}
 
 	/**
-	 * Gets the public key correspoding to the input private key (with no 0x04 header byte)
+	 * Gets the public key corresponding to the input private key (with no 0x04 header byte)
 	 * @param privateKey - input private key
 	 * @return public key (no 0x04 header byte)
 	 */
