@@ -43,10 +43,10 @@ public class Main {
 	private WalletView view;
 
 	public Main() {
+		Threading.USER_THREAD = runInUIThread;
 		Object[] fileAndDir = openWalletFile();
 		mwallet = new ARWallet((String)fileAndDir[0], (File)fileAndDir[1]);
 		view = new WalletView();
-		Threading.USER_THREAD = runInUIThread;
 		mwallet.addObserver(view);
 
 		Controller controller = new Controller();
