@@ -95,41 +95,6 @@ public class ReceiveTab extends JPanel {
 		final JTextField text = new JTextField(name);
 		text.setBounds(left+insets.left,top+insets.top,width,height);
 		
-		text.addMouseListener(new MouseListener(){
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				text.setText("");
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// do nothing
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// do nothing
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// do nothing
-				
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// do nothing
-				
-			}
-
-			
-		});
-		
 		this.add(text);
 		return text;
 	}
