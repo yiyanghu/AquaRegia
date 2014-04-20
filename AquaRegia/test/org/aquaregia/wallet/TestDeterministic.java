@@ -15,6 +15,12 @@ import com.google.bitcoin.params.MainNetParams;
 public class TestDeterministic {
 
 	@Test
+	public void testRandomSeed() {
+		String seed = Deterministic.randomSeed();
+		assertTrue(seed.matches("^[0-9a-f]{32}$"));
+	}
+	
+	@Test
 	public void testGetMasterPrivateKey() {
 		String test1 = "This is something";
 		String expected1 = "b409b15310c82f3144ec7d3807ed407eda676e9bffe64d58450cd69f59280639";
