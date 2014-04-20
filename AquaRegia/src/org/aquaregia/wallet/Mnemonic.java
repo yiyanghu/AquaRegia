@@ -65,7 +65,7 @@ public class Mnemonic {
 	}
 
 	/**
-	 * returns the string array of 12 words 
+	 * Encode a deterministic wallet mnemonic
 	 * @param seed - in hex format
 	 * @return
 	 */
@@ -91,7 +91,7 @@ public class Mnemonic {
 	}
 
 	/**
-	 * 
+	 * Decode a deterministic wallet mnemonic
 	 * @param message - the given 12 words
 	 * @return the string of the seed in hex format
 	 */
@@ -120,7 +120,7 @@ public class Mnemonic {
 	
 	
 	/**
-	 * 
+	 * Join a collection of strings with a delimiter
 	 * @param s - would the the collection of string
 	 * @param delimiter - potentially adding the space in between
 	 * @return the new long string with space between words
