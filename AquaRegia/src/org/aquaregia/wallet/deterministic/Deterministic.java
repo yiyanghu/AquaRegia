@@ -1,4 +1,4 @@
-package org.aquaregia.wallet;
+package org.aquaregia.wallet.deterministic;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
