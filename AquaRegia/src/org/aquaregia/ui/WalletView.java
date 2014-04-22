@@ -1,5 +1,6 @@
 package org.aquaregia.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,7 @@ public class WalletView extends JFrame implements Observer {
 	
 
 	private JLabel balance;
+	public Menu menuBar;
 	public SendTab send;
 	public ReceiveTab receive;
 	public HistoryTab history;
@@ -49,8 +51,9 @@ public class WalletView extends JFrame implements Observer {
 	private void initUI() {
 
 		JPanel panel = new JPanel();
-		getContentPane().add(panel);
-
+		menuBar = new Menu();
+		this.setJMenuBar(menuBar);
+		
 		panel.setLayout(null);
 		addBalance();
 		addTabs();
