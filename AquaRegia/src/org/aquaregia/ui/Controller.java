@@ -1,6 +1,9 @@
 package org.aquaregia.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -9,7 +12,9 @@ import java.awt.event.WindowListener;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -159,16 +164,24 @@ public class Controller implements WindowListener {
 			
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)){
 				JOptionPane seedWindow = new JOptionPane();
-				seedWindow.setMessage("Your seed is");
-				seedWindow.setMessageType(JOptionPane.INFORMATION_MESSAGE);
-				seedWindow.setPreferredSize(new Dimension(500,400));
 				
-				JTextArea seedInfo = new JTextArea("default seed should be displayed");
+				JPanel background = new JPanel();
+				background.setLayout(new BorderLayout());
+				background.setPreferredSize(new Dimension(300,200));
+					
+				JLabel message = new JLabel("Your seed is ");
+				message.setPreferredSize(new Dimension(50,50));
+				
+				
+				JTextArea seedInfo = new JTextArea("default seed should be displayed default seed should be displayed default seed should be displayed default seed should be displayed");		
+				seedInfo.setLineWrap(true);
+				seedInfo.setWrapStyleWord(true);
+				
 				seedInfo.setEditable(false);
-				JDialog dialog = seedWindow.createDialog(null,"Seed");
-				dialog.setVisible(true);
+				background.add(message,BorderLayout.PAGE_START);
+				background.add(seedInfo,BorderLayout.CENTER);	
 				
-				seedWindow.add(seedInfo);
+				JOptionPane.showMessageDialog(null,background,"Seed Information",JOptionPane.INFORMATION_MESSAGE);
 				
 			}
 			
