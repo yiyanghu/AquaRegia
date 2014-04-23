@@ -105,6 +105,12 @@ public class ARWallet extends Observable {
 		//uiInitData();
 	}
 	
+	public void switchWallet(String walletName, File directory) {
+		if (wallet != null)
+			close();
+		initWallet(walletName, directory);
+	}
+	
 	// Commands available for UI
 	
 	/**
