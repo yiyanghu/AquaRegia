@@ -10,8 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.aquaregia.wallet.ARWallet;
 import org.aquaregia.wallet.BitcoinAmount;
@@ -65,7 +68,7 @@ public class Controller implements WindowListener {
 	 */
 	@Override
 	public void windowClosing(WindowEvent winEvt) {
-		closeApp((JFrame) winEvt.getSource());
+		closeApp();
 	}
 
 	@Override
@@ -102,10 +105,10 @@ public class Controller implements WindowListener {
 	/**
 	 * Properly shutdown application
 	 */
-	private void closeApp(JFrame f) {
+	private void closeApp() {
 		System.out.println("*** Caught exit request, shutting down properly.");
 		// Clean up in the background
-		f.setVisible(false);
+		view.setVisible(false);
 		mwallet.close();
 		System.exit(0);
 	}
@@ -157,11 +160,14 @@ public class Controller implements WindowListener {
 			// to-do: different items got selected
 
 			if (e.getSource().equals(view.menuBar.menuFileQuit)) {
-				System.exit(0);
+				closeApp();
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuFileOpen)) {
-				// to do
+				Object[] fileAndDir = openWalletFile();
+				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
+				
+				
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)) {
@@ -197,6 +203,45 @@ public class Controller implements WindowListener {
 
 		}
 
+	}
+	
+	/**
+	 * This function would open a wallet from the user
+	 * or exit if nothing to be opened
+	 * @return the name of the opened wallet and directory
+	 */
+	public Object[] openWalletFile() {
+		String wallet = "";
+		File parentDirectory = null;
+		
+
+		// create a file chooser
+		final JFileChooser fileDialog = new JFileChooser();
+		fileDialog.setCurrentDirectory(new File("."));
+		fileDialog.setAcceptAllFileFilterUsed(false);
+		
+		// set file filter
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
+		fileDialog.setFileFilter(filter);
+		
+		// in response to a button click:
+		int returnVal = fileDialog.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			java.io.File file = fileDialog.getSelectedFile();
+			parentDirectory = file.getParentFile();
+			wallet = file.getName();
+			
+			if (! wallet.endsWith(".wallet")){
+				System.out.println("somehow user didn't choose a wallet file");
+			}
+			else{
+				int suffixPosition = wallet.indexOf(".wallet");
+				wallet = wallet.substring(0, suffixPosition);
+			}
+
+		} 
+
+		return new Object[] {wallet, parentDirectory};
 	}
 
 	// event handler for send coin button in the send tab

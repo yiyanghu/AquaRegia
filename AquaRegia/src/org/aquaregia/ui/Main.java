@@ -44,8 +44,7 @@ public class Main {
 
 	public Main() {
 		Threading.USER_THREAD = runInUIThread;
-		Object[] fileAndDir = openWalletFile();
-		mwallet = new ARWallet((String)fileAndDir[0], (File)fileAndDir[1]);
+		mwallet = new ARWallet();
 		view = new WalletView();
 		mwallet.addObserver(view);
 
