@@ -158,6 +158,9 @@ public class Controller implements WindowListener {
 		public void actionPerformed(ActionEvent e) {
 			Menu menu = view.menuBar;
 			// to-do: different items got selected
+			String windowTitle;
+			String toDisplay;
+			String message;
 
 			if (e.getSource().equals(view.menuBar.menuFileQuit)) {
 				closeApp();
@@ -167,8 +170,6 @@ public class Controller implements WindowListener {
 				Object[] fileAndDir = openWalletFile();
 				if (fileAndDir == null) return;
 				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
-				
-				
 			}
 			
 			else if (e.getSource().equals(view.menuBar.menuFileNew)) {
@@ -178,79 +179,98 @@ public class Controller implements WindowListener {
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)) {
-				JOptionPane seedWindow = new JOptionPane();
+				windowTitle = "Seed";
+				message = "Your seed is ";
+				toDisplay = "default seed should be displayed default seed should be displayed default seed should be displayed default seed should be displayed";
+				popUpDisplay(windowTitle, message, toDisplay);
+			}
 
-				JPanel background = new JPanel();
-				background.setLayout(new BorderLayout());
-				background.setPreferredSize(new Dimension(300, 200));
-
-				JLabel message = new JLabel("Your seed is ");
-				message.setPreferredSize(new Dimension(50, 50));
-
-				JTextArea seedInfo = new JTextArea(
-						"default seed should be displayed default seed should be displayed default seed should be displayed default seed should be displayed");
-				seedInfo.setLineWrap(true);
-				seedInfo.setWrapStyleWord(true);
-				seedInfo.setEditable(false);
-				seedInfo.addMouseListener(new MouseAdapter() {
-
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						((JTextArea)e.getSource()).selectAll();
-					}
-				});
-
-				background.add(message, BorderLayout.PAGE_START);
-				background.add(seedInfo, BorderLayout.CENTER);
-
-				JOptionPane.showMessageDialog(null, background,
-						"Seed Information", JOptionPane.INFORMATION_MESSAGE);
-
+			else if (e.getSource().equals(view.menuBar.menuWalletMPK)) {
+				windowTitle = "Master Public Key";
+				message = "Your master public key is ";
+				toDisplay = "this is your master public key";
+				popUpDisplay(windowTitle, message, toDisplay);
 			}
 
 		}
 
+		/**
+		 * This function would display information when menu item "seed" or
+		 * "master public key" is clicked
+		 * 
+		 * @param message
+		 *            - either display seed or mpk
+		 * @param toDisplay
+		 *            - the actual data to be displayed
+		 */
+		private void popUpDisplay(String title, String message, String toDisplay) {
+			JOptionPane window = new JOptionPane();
+			JPanel background = new JPanel();
+			background.setLayout(new BorderLayout());
+			background.setPreferredSize(new Dimension(300, 200));
+
+			JLabel msg = new JLabel(message);
+			msg.setPreferredSize(new Dimension(50, 50));
+
+			JTextArea info = new JTextArea(toDisplay);
+			info.setLineWrap(true);
+			info.setWrapStyleWord(true);
+			info.setEditable(false);
+			info.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					((JTextArea) e.getSource()).selectAll();
+				}
+			});
+
+			background.add(msg, BorderLayout.PAGE_START);
+			background.add(info, BorderLayout.CENTER);
+
+			JOptionPane.showMessageDialog(null, background, title,
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+
 	}
-	
+
 	/**
-	 * This function would open a wallet from the user
-	 * or exit if nothing to be opened
+	 * This function would open a wallet from the user or exit if nothing to be
+	 * opened
+	 * 
 	 * @return the name of the opened wallet and directory
 	 */
 	public Object[] openWalletFile() {
 		String wallet = "";
 		File parentDirectory = null;
-		
 
 		// create a file chooser
 		final JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setCurrentDirectory(new File("."));
 		fileDialog.setAcceptAllFileFilterUsed(false);
-		
+
 		// set file filter
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Bitcoin wallet", new String[] { "wallet" });
 		fileDialog.setFileFilter(filter);
-		
+
 		// in response to a button click:
 		int returnVal = fileDialog.showOpenDialog(view);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			java.io.File file = fileDialog.getSelectedFile();
 			parentDirectory = file.getParentFile();
 			wallet = file.getName();
-			
-			if (! wallet.endsWith(".wallet")){
+
+			if (!wallet.endsWith(".wallet")) {
 				System.out.println("somehow user didn't choose a wallet file");
-			}
-			else{
+			} else {
 				int suffixPosition = wallet.indexOf(".wallet");
 				wallet = wallet.substring(0, suffixPosition);
 			}
-
 		} else {
 			return null;
 		}
 
-		return new Object[] {wallet, parentDirectory};
+		return new Object[] { wallet, parentDirectory };
 	}
 
 	
