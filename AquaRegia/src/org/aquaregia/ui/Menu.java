@@ -15,14 +15,14 @@ public class Menu extends JMenuBar {
 	private JMenu menuFile;
 	private JMenu menuWallet;
 	private JMenu menuHelp;
-	private JMenuItem menuFileNew;
-	private JMenuItem menuFileOpen;
-	private JMenuItem menuFileQuit;
-	private JMenuItem menuWalletSeed;
-	private JMenuItem menuWalletMPK;
-	private JMenuItem menuWalletExportHistory;
-	private JMenuItem menuHelpAbout;
-	private JMenuItem menuHelpWebsite;
+	public JMenuItem menuFileNew;
+	public  JMenuItem menuFileOpen;
+	public JMenuItem menuFileQuit;
+	public JMenuItem menuWalletSeed;
+	public JMenuItem menuWalletMPK;
+	public JMenuItem menuWalletExportHistory;
+	public JMenuItem menuHelpAbout;
+	public JMenuItem menuHelpWebsite;
 
 	public Menu() {
 		// create the file menu
@@ -34,7 +34,6 @@ public class Menu extends JMenuBar {
 		menuFileNew = createMenuItem(menuFile, ITEM_PLAIN, "New", 'N');
 		menuFileOpen = createMenuItem(menuFile,ITEM_PLAIN,"Open...",'O');
 		menuFileQuit = createMenuItem(menuFile,ITEM_PLAIN,"Quit",'Q');
-		menuFile.addSeparator();
 		
 		// create the wallet menu
 		menuWallet = new JMenu("Wallet");
@@ -45,7 +44,7 @@ public class Menu extends JMenuBar {
 		menuWalletSeed = createMenuItem(menuWallet,ITEM_PLAIN,"Seed",'S');
 		menuWalletMPK = createMenuItem(menuWallet,ITEM_PLAIN,"Master Public Key",'M');
 		menuWalletExportHistory = createMenuItem(menuWallet,ITEM_PLAIN,"Export history",'E');
-		menuFile.addSeparator();
+		
 		
 		// create the help menu
 		menuHelp = new JMenu("Help");
@@ -55,7 +54,6 @@ public class Menu extends JMenuBar {
 		// build the help menu options
 		menuHelpAbout = createMenuItem(menuHelp,ITEM_PLAIN,"About",'A');
 		menuHelpWebsite = createMenuItem(menuHelp,ITEM_PLAIN,"Website",'W');
-		menuHelp.addSeparator();
 		
 		
 	}
@@ -93,6 +91,21 @@ public class Menu extends JMenuBar {
 		
 		return menuItem;
 			
+	}
+
+
+	public void addController(Controller controller) {
+		
+		menuFileNew.addActionListener(controller.mHandler);
+		menuFileOpen.addActionListener(controller.mHandler);
+		menuFileQuit.addActionListener(controller.mHandler);
+		menuWalletSeed.addActionListener(controller.mHandler);
+		menuWalletMPK.addActionListener(controller.mHandler);
+		menuWalletExportHistory.addActionListener(controller.mHandler);
+		menuHelpAbout.addActionListener(controller.mHandler);
+		menuHelpWebsite.addActionListener(controller.mHandler);
+		
+		
 	}
 	
 	

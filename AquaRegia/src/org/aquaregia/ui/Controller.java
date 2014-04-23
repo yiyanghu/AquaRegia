@@ -1,14 +1,18 @@
 package org.aquaregia.ui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -32,11 +36,14 @@ public class Controller implements WindowListener {
 	public GenerateKeyHandler gKHandler;
 	public SendCoinHandler sCHandler;
 	public AddressSelectionHandler addressSelectionHandler;
+	public MenuHandler mHandler;
+	
 	
 	public Controller() {
 		gKHandler = new GenerateKeyHandler();
 		sCHandler = new SendCoinHandler();
 		addressSelectionHandler = new AddressSelectionHandler();
+		mHandler = new MenuHandler();
 	}
 	
 	// Add Listener handlers here (with implements on this object)
@@ -131,6 +138,42 @@ public class Controller implements WindowListener {
 		public void actionPerformed(ActionEvent e) {
 			mwallet.addAddress();
 		}
+		
+	}
+	
+	// event handler for menu bar
+	public class MenuHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Menu menu = view.menuBar;	
+			// to-do: different items got selected
+			
+			if(e.getSource().equals(view.menuBar.menuFileQuit)){
+				System.exit(0);
+			}
+			
+			else if (e.getSource().equals(view.menuBar.menuFileOpen)){
+				// to do
+			}
+			
+			else if (e.getSource().equals(view.menuBar.menuWalletSeed)){
+				JOptionPane seedWindow = new JOptionPane();
+				seedWindow.setMessage("Your seed is");
+				seedWindow.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+				seedWindow.setPreferredSize(new Dimension(500,400));
+				
+				JTextArea seedInfo = new JTextArea("default seed should be displayed");
+				seedInfo.setEditable(false);
+				JDialog dialog = seedWindow.createDialog(null,"Seed");
+				dialog.setVisible(true);
+				
+				seedWindow.add(seedInfo);
+				
+			}
+			
+		}
+		
 		
 	}
 	

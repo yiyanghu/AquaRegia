@@ -138,6 +138,7 @@ public class WalletView extends JFrame implements Observer {
 		this.addWindowListener(controller);
 		receive.addController(controller);
 		send.addController(controller);
+		menuBar.addController(controller);
 		controller.viewReady();
 	}
 }
