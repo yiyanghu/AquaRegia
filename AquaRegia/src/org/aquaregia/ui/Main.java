@@ -56,47 +56,7 @@ public class Main {
 		view.addController(controller);
 	}
 
-	/**
-	 * This function would open a wallet from the user
-	 * or exit if nothing to be opened
-	 * @return the name of the opened wallet and directory
-	 */
-	public Object[] openWalletFile() {
-		String wallet = "";
-		File parentDirectory = null;
-		
-
-		// create a file chooser
-		final JFileChooser fileDialog = new JFileChooser();
-		fileDialog.setCurrentDirectory(new File("."));
-		fileDialog.setAcceptAllFileFilterUsed(false);
-		
-		// set file filter
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
-		fileDialog.setFileFilter(filter);
-		
-		// in response to a button click:
-		int returnVal = fileDialog.showOpenDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			java.io.File file = fileDialog.getSelectedFile();
-			parentDirectory = file.getParentFile();
-			wallet = file.getName();
-			
-			if (! wallet.endsWith(".wallet")){
-				System.out.println("somehow user didn't choose a wallet file");
-				System.exit(0);
-			}
-			else{
-				int suffixPosition = wallet.indexOf(".wallet");
-				wallet = wallet.substring(0, suffixPosition);
-			}
-
-		} else {
-			System.exit(0);
-		}
-
-		return new Object[] {wallet, parentDirectory};
-	}
+	
 
 	public static void main(String[] args) {
 		BriefLogFormatter.init();
