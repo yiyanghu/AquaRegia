@@ -165,9 +165,16 @@ public class Controller implements WindowListener {
 
 			else if (e.getSource().equals(view.menuBar.menuFileOpen)) {
 				Object[] fileAndDir = openWalletFile();
+				if (fileAndDir == null) return;
 				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
 				
 				
+			}
+			
+			else if (e.getSource().equals(view.menuBar.menuFileNew)) {
+				Object[] fileAndDir = createWalletFile();
+				if (fileAndDir == null) return;
+				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)) {
@@ -225,7 +232,7 @@ public class Controller implements WindowListener {
 		fileDialog.setFileFilter(filter);
 		
 		// in response to a button click:
-		int returnVal = fileDialog.showOpenDialog(null);
+		int returnVal = fileDialog.showOpenDialog(view);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			java.io.File file = fileDialog.getSelectedFile();
 			parentDirectory = file.getParentFile();
@@ -239,11 +246,61 @@ public class Controller implements WindowListener {
 				wallet = wallet.substring(0, suffixPosition);
 			}
 
-		} 
+		} else {
+			return null;
+		}
 
 		return new Object[] {wallet, parentDirectory};
 	}
 
+	
+	public Object[] createWalletFile() {
+		String wallet = "";
+		File parentDirectory = null;
+		
+
+		// create a file chooser
+		final JFileChooser fileDialog = new JFileChooser();
+		fileDialog.setCurrentDirectory(new File("."));
+		fileDialog.setAcceptAllFileFilterUsed(false);
+		
+		// set file filter
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
+		fileDialog.setFileFilter(filter);
+		
+		// in response to a button click:
+		int returnVal = fileDialog.showDialog(view, "Create Wallet");
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			java.io.File file = fileDialog.getSelectedFile();
+			if (file.exists()) {
+				int result = JOptionPane.showConfirmDialog(view, "Do you want to overwrite the file " + file + 
+						"?\nYou will PERMANENTLY lose any bitcoins in the wallet if you don't a backup.", 
+						"Overwrite?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				switch (result) {
+					case JOptionPane.YES_OPTION:
+						file.delete();
+						break;
+					case JOptionPane.NO_OPTION:
+					default:
+						return null;
+					
+				}
+			}
+			parentDirectory = file.getParentFile();
+			wallet = file.getName();
+			
+			if (wallet.endsWith(".wallet")) {
+				int suffixPosition = wallet.indexOf(".wallet");
+				wallet = wallet.substring(0, suffixPosition);
+			}
+
+		} else {
+			return null;
+		}
+
+		return new Object[] {wallet, parentDirectory};
+	}
+	
 	// event handler for send coin button in the send tab
 	public class SendCoinHandler implements ActionListener {
 		@Override
