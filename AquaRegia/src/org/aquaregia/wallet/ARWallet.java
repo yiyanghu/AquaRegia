@@ -222,7 +222,7 @@ public class ARWallet extends Observable {
             // TODO:  update progress bar UI element with new percentage
             // ensure bar is unhidden?
 			// seems to run every 1%. not in UI thread
-            //System.out.println(java.awt.EventQueue.isDispatchThread() + "block downloads " + pct + " " + blocksSoFar);
+            System.out.println(java.awt.EventQueue.isDispatchThread() + "block downloads " + pct + " " + blocksSoFar);
 
         }
 
@@ -274,6 +274,7 @@ public class ARWallet extends Observable {
 		@Override
 		public void onWalletChanged(Wallet wallet) {
 			System.out.println("wallet changed event" + ++i);
+			System.out.flush();
 			pushBalance();
 			pushHistory();
 		}

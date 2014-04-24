@@ -191,6 +191,10 @@ public class Controller implements WindowListener {
 				toDisplay = "this is your master public key";
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
+			
+			/*else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
+				JTextField password 
+			}*/
 
 		}
 
