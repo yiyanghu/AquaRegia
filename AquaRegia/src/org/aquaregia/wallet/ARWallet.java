@@ -34,6 +34,7 @@ import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletEventListener;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.utils.Threading;
 
@@ -47,7 +48,7 @@ public class ARWallet extends Observable {
 	public static final String WALLET_DEFAULT = "default";
 	
 	// make the wallet work on main Bitcoin network
-	private NetworkParameters params = MainNetParams.get();
+	private NetworkParameters params;
 	private PeerGroup peerGroup;
 	private Wallet wallet;
 	private WalletInitializer walletGen;
@@ -82,6 +83,13 @@ public class ARWallet extends Observable {
 	 */
 	private void initWallet(String walletName, File directory) {
 		assert(walletName != null);
+		if (walletName.toLowerCase().startsWith("testnet")) {
+			params = TestNet3Params.get();
+			System.out.println(walletName + " is a testnet wallet");
+		}
+		else {
+			params = MainNetParams.get();
+		}
 		walletGen = new WalletInitializer(params, directory,  walletName);
 		
 		// configure wallet service
