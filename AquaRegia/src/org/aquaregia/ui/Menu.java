@@ -19,6 +19,7 @@ public class Menu extends JMenuBar {
 	public  JMenuItem menuFileOpen;
 	public JMenuItem menuFileQuit;
 	public JMenuItem menuWalletSeed;
+	public JMenuItem menuWalletPassword;
 	public JMenuItem menuWalletMPK;
 	public JMenuItem menuWalletExportHistory;
 	public JMenuItem menuHelpAbout;
@@ -43,6 +44,7 @@ public class Menu extends JMenuBar {
 		// build the wallet menu options
 		menuWalletSeed = createMenuItem(menuWallet,ITEM_PLAIN,"Seed",'S');
 		menuWalletMPK = createMenuItem(menuWallet,ITEM_PLAIN,"Master Public Key",'M');
+		menuWalletPassword = createMenuItem(menuWallet,ITEM_PLAIN,"Password",'P');
 		menuWalletExportHistory = createMenuItem(menuWallet,ITEM_PLAIN,"Export history",'E');
 		
 		
@@ -101,6 +103,7 @@ public class Menu extends JMenuBar {
 		menuFileQuit.addActionListener(controller.mHandler);
 		menuWalletSeed.addActionListener(controller.mHandler);
 		menuWalletMPK.addActionListener(controller.mHandler);
+		menuWalletPassword.addActionListener(controller.mHandler);
 		menuWalletExportHistory.addActionListener(controller.mHandler);
 		menuHelpAbout.addActionListener(controller.mHandler);
 		menuHelpWebsite.addActionListener(controller.mHandler);
