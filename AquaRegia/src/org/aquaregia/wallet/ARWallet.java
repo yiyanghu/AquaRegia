@@ -52,6 +52,7 @@ public class ARWallet extends Observable {
 	private PeerGroup peerGroup;
 	private Wallet wallet;
 	private WalletInitializer walletGen;
+	private WalletEventHandler weventh;
 	
 	/**
 	 * Initialize with default.wallet
@@ -105,7 +106,8 @@ public class ARWallet extends Observable {
 		peerGroup.setMaxConnections(12);
 		wallet = walletGen.wallet();
 		wallet.allowSpendingUnconfirmedTransactions();
-		wallet.addEventListener(new WalletEventHandler());
+		weventh = new WalletEventHandler();
+		wallet.addEventListener(weventh);
 		// ensure we have atleast one address
 		if (wallet.getKeychainSize() < 1)
 			addAddress();
@@ -114,6 +116,8 @@ public class ARWallet extends Observable {
 	}
 	
 	public void switchWallet(String walletName, File directory) {
+		if (weventh != null)
+			wallet.removeEventListener(weventh);
 		if (wallet != null)
 			close();
 		initWallet(walletName, directory);
