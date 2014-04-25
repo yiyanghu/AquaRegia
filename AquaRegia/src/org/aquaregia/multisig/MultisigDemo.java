@@ -227,7 +227,7 @@ public class MultisigDemo {
 		System.out.print("checking the tx output we selected is multisig...");
 		assert(multisigScript.isSentToMultiSig());
 		System.out.println("OK");
-		BigInteger value = multisigOutput.getValue();
+		BigInteger value = multisigOutput.getValue().subtract(Wallet.SendRequest.DEFAULT_FEE_PER_KB);
 
 		// OK, now build a transaction that spends the money back to the client.
 		Transaction spendTx = new Transaction(params);

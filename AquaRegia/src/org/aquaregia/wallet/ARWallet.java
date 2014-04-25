@@ -161,11 +161,19 @@ public class ARWallet extends Observable {
 	}
 	
 	/**
-	 * 
+	 * Encrypt wallet
 	 * @param password
 	 */
 	public void encrypt(String password) {
 		wallet.encrypt(password);
+	}
+	
+	/**
+	 * Check if wallet is encrypted
+	 * @return true if wallet is encrypted
+	 */
+	public boolean isEncrypted() {
+		return wallet.isEncrypted();
 	}
 	
 	/**
