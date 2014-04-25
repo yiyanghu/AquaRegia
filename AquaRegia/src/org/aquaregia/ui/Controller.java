@@ -2,6 +2,7 @@ package org.aquaregia.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -192,9 +194,30 @@ public class Controller implements WindowListener {
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
 			
-			/*else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
-				JTextField password 
-			}*/
+			else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
+				
+				// start the option pane with a panel 
+				JOptionPane window = new JOptionPane();
+				JPanel background = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+				background.setLayout(new BorderLayout());
+				background.setPreferredSize(new Dimension(300, 200));
+				
+				// draw the panel with password settings
+				JPasswordField oldPass = new JPasswordField(15);
+				JPasswordField newPass = new JPasswordField(15);
+				JPasswordField confirmPass = new JPasswordField(15);
+				
+				JLabel msg = new JLabel("Your wallet is encrypted. If you want to change your password, type the old one and "
+						+ "put in the new one. To disable wallet encryption, enter an empty new password");
+				
+				msg.setLabelFor(oldPass);
+				background.add(msg);
+				background.add(oldPass);
+				background.add(newPass);
+				background.add(confirmPass);
+				
+				
+			}
 
 		}
 
