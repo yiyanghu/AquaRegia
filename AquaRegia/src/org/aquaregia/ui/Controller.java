@@ -29,6 +29,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.aquaregia.wallet.ARWallet;
 import org.aquaregia.wallet.BitcoinAmount;
 
@@ -199,29 +201,31 @@ public class Controller implements WindowListener {
 				
 				// start the option pane with a panel 
 				JPanel background = new JPanel();
-				background.setLayout(new BorderLayout());
-				background.setPreferredSize(new Dimension(200, 200));
+				background.setLayout(new MigLayout());
+				background.setPreferredSize(new Dimension(600, 180));
 				
 				// draw the panel with password settings
-				/*JPasswordField oldPass = new JPasswordField(15);
-				JPasswordField newPass = new JPasswordField(15);
-				JPasswordField confirmPass = new JPasswordField(15);*/
-				
-				JTextField oldPass = new JTextField();
-				JTextField newPass = new JTextField();
-				JTextField confirmPass = new JTextField();
-				
+				JLabel oldPassword = new JLabel("Old password");
+				JPasswordField oldPass = new JPasswordField(30);
+				JLabel newPassword = new JLabel("New password");
+				JPasswordField newPass = new JPasswordField(30);
+				JLabel confirmPassword = new JLabel("Confirm new password");
+				JPasswordField confirmPass = new JPasswordField(30);
 				
 				
-				JLabel msg = new JLabel("Your wallet is encrypted. If you want to change your password, type the old one and "
-						+ "put in the new one. To disable wallet encryption, enter an empty new password");
+				JTextArea msg = new JTextArea("Your wallet is encrypted. To change your password, please"
+						+ " type the old one first. To disable wallet encryption, enter an empty new password");
 				
-				msg.setPreferredSize(new Dimension(100, 100));
-				//msg.setLabelFor(oldPass);
-				background.add(msg,BorderLayout.PAGE_START);
-				background.add(oldPass,BorderLayout.WEST);
-				background.add(newPass);
-				background.add(confirmPass);
+				/*msg.setPreferredSize(new Dimension(600, 60));*/
+				msg.setOpaque(false);
+				msg.setEditable(false);
+				background.add(msg,"cell 0 0 4 1");
+				background.add(oldPassword, "cell 0 4 1 1");
+				background.add(oldPass,"cell 2 4 1 1");
+				background.add(newPassword, "cell 0 5 1 1");
+				background.add(newPass,"cell 2 5 1 1");
+				background.add(confirmPassword,"cell 0 6 1 1");
+				background.add(confirmPass,"cell 2 6 1 1");
 				
 				JOptionPane.showMessageDialog(null, background, "Setting Password",
 						JOptionPane.INFORMATION_MESSAGE);
