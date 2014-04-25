@@ -238,6 +238,11 @@ public class Controller implements WindowListener {
 				JOptionPane.showMessageDialog(null, background, "Setting Password",
 						JOptionPane.INFORMATION_MESSAGE);
 				
+				System.out.printf("%s\n",new String(oldPass.getPassword()));
+				System.out.printf("%s\n",new String(newPass.getPassword()));
+				System.out.printf("%s\n",new String(confirmPass.getPassword()));
+				
+				
 				
 			}
 
