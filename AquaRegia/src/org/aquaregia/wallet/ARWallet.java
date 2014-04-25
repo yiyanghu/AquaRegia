@@ -19,6 +19,7 @@ import org.aquaregia.ui.Strings;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -33,6 +34,7 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletEventListener;
+import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.script.Script;
@@ -156,6 +158,29 @@ public class ARWallet extends Observable {
 		ECKey key = new ECKey();
 		wallet.addKey(key);
 		return key.toAddress(params);
+	}
+	
+	/**
+	 * 
+	 * @param password
+	 */
+	public void encrypt(String password) {
+		wallet.encrypt(password);
+	}
+	
+	/**
+	 * Attempts to decrypt the wallet with the input password
+	 * @param password
+	 * @return true if wallet was decrypted, else false
+	 */
+	public boolean decrypt(String password) {
+		KeyParameter decrypingKey = wallet.getKeyCrypter().deriveKey(password);
+		try {
+			wallet.decrypt(decrypingKey);
+		} catch (KeyCrypterException kce) {
+			return false;
+		}
+		return true;
 	}
 	
 	// UI updating

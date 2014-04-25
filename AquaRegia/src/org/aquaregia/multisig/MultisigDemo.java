@@ -67,7 +67,7 @@ public class MultisigDemo {
         //forwardingAddress = new Address(params, args[0]);
 
         // Start up a basic app using a class that automates some boilerplate.
-        mainKit = new WalletAppKit(params, new File("."), "multi-mainWallet");
+        mainKit = new WalletAppKit(params, new File("."), "multi2-mainWallet");
         //serverKit = new WalletAppKit(params, new File("."), "multi-serverWallet");
 
         // Download the block chain and wait until it's done.
@@ -81,7 +81,7 @@ public class MultisigDemo {
         
         walletMain = mainKit.wallet();
         
-        File vWalletFile = new File(new File("."), "multi-serverWallet" + ".wallet");
+        File vWalletFile = new File(new File("."), "multi2-serverWallet" + ".wallet");
         
         if (vWalletFile.exists()) {
         	System.out.println("found server wallet");
