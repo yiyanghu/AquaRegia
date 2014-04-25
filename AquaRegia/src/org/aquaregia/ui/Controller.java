@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
+import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -197,24 +198,33 @@ public class Controller implements WindowListener {
 			else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
 				
 				// start the option pane with a panel 
-				JOptionPane window = new JOptionPane();
-				JPanel background = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+				JPanel background = new JPanel();
 				background.setLayout(new BorderLayout());
-				background.setPreferredSize(new Dimension(300, 200));
+				background.setPreferredSize(new Dimension(200, 200));
 				
 				// draw the panel with password settings
-				JPasswordField oldPass = new JPasswordField(15);
+				/*JPasswordField oldPass = new JPasswordField(15);
 				JPasswordField newPass = new JPasswordField(15);
-				JPasswordField confirmPass = new JPasswordField(15);
+				JPasswordField confirmPass = new JPasswordField(15);*/
+				
+				JTextField oldPass = new JTextField();
+				JTextField newPass = new JTextField();
+				JTextField confirmPass = new JTextField();
+				
+				
 				
 				JLabel msg = new JLabel("Your wallet is encrypted. If you want to change your password, type the old one and "
 						+ "put in the new one. To disable wallet encryption, enter an empty new password");
 				
-				msg.setLabelFor(oldPass);
-				background.add(msg);
-				background.add(oldPass);
+				msg.setPreferredSize(new Dimension(100, 100));
+				//msg.setLabelFor(oldPass);
+				background.add(msg,BorderLayout.PAGE_START);
+				background.add(oldPass,BorderLayout.WEST);
 				background.add(newPass);
 				background.add(confirmPass);
+				
+				JOptionPane.showMessageDialog(null, background, "Setting Password",
+						JOptionPane.INFORMATION_MESSAGE);
 				
 				
 			}
@@ -231,7 +241,7 @@ public class Controller implements WindowListener {
 		 *            - the actual data to be displayed
 		 */
 		private void popUpDisplay(String title, String message, String toDisplay) {
-			JOptionPane window = new JOptionPane();
+		
 			JPanel background = new JPanel();
 			background.setLayout(new BorderLayout());
 			background.setPreferredSize(new Dimension(300, 200));
