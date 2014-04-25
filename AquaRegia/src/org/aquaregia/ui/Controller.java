@@ -201,7 +201,7 @@ public class Controller implements WindowListener {
 				
 				// start the option pane with a panel 
 				JPanel background = new JPanel();
-				background.setLayout(new MigLayout());
+				background.setLayout(new MigLayout("wrap 4"));
 				background.setPreferredSize(new Dimension(600, 180));
 				
 				// draw the panel with password settings
@@ -219,13 +219,21 @@ public class Controller implements WindowListener {
 				/*msg.setPreferredSize(new Dimension(600, 60));*/
 				msg.setOpaque(false);
 				msg.setEditable(false);
-				background.add(msg,"cell 0 0 4 1");
+				/*background.add(msg,"cell 0 0 4 1");
 				background.add(oldPassword, "cell 0 4 1 1");
 				background.add(oldPass,"cell 2 4 1 1");
 				background.add(newPassword, "cell 0 5 1 1");
 				background.add(newPass,"cell 2 5 1 1");
 				background.add(confirmPassword,"cell 0 6 1 1");
-				background.add(confirmPass,"cell 2 6 1 1");
+				background.add(confirmPass,"cell 2 6 1 1");*/
+				
+				background.add(msg,"span 4 2");
+				background.add(oldPassword);
+				background.add(oldPass,"wrap");
+				background.add(newPassword);
+				background.add(newPass,"wrap");
+				background.add(confirmPassword);
+				background.add(confirmPass,"wrap");
 				
 				JOptionPane.showMessageDialog(null, background, "Setting Password",
 						JOptionPane.INFORMATION_MESSAGE);
