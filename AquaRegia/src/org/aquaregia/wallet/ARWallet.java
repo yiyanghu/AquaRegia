@@ -8,21 +8,25 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.Executor;
 
+import javax.annotation.Nullable;
 import javax.swing.SwingUtilities;
 
 import org.aquaregia.ui.Main;
 import org.aquaregia.ui.WalletView;
 import org.aquaregia.ui.Strings;
 import org.aquaregia.wallet.addressbook.AddressBook;
+import org.aquaregia.wallet.deterministic.DeterministicExtension;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.BlockChain;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
@@ -34,6 +38,8 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletEventListener;
+import com.google.bitcoin.core.WalletExtension;
+import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterException;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
@@ -55,6 +61,10 @@ public class ARWallet extends Observable {
 	private Wallet wallet;
 	private WalletInitializer walletGen;
 	private WalletEventHandler weventh;
+
+	public DeterministicExtension deterministic;
+
+	private BlockChain chain;
 	
 	/**
 	 * Initialize with default.wallet
@@ -105,16 +115,19 @@ public class ARWallet extends Observable {
 		
 		// post configuration
 		peerGroup = walletGen.peerGroup();
+		chain = walletGen.chain();
 		peerGroup.setMaxConnections(12);
 		wallet = walletGen.wallet();
 		wallet.allowSpendingUnconfirmedTransactions();
 		weventh = new WalletEventHandler();
 		wallet.addEventListener(weventh);
 		// ensure we have atleast one address
-		if (wallet.getKeychainSize() < 1)
-			addAddress();
-		
-		//uiInitData();
+		//if (wallet.getKeychainSize() < 1)
+		//	addAddress();
+		Map<String,WalletExtension> extensions = wallet.getExtensions();
+		deterministic = (DeterministicExtension) extensions.get(DeterministicExtension.getExtensionIDStatic());
+		if (walletGen.newWallet)
+			extensionsInit();
 	}
 	
 	public void switchWallet(String walletName, File directory) {
@@ -124,6 +137,10 @@ public class ARWallet extends Observable {
 			close();
 		initWallet(walletName, directory);
 		uiInitData();
+	}
+	
+	private void extensionsInit() {
+		deterministic.newSeedInit(wallet);
 	}
 	
 	// Commands available for UI
@@ -154,7 +171,11 @@ public class ARWallet extends Observable {
 	 * Add a new receiving address to the wallet
 	 * @return address that was added
 	 */
+	@Nullable
 	public Address addAddress() {
+		if (deterministic.isInitialized()) {
+			return null;
+		}
 		ECKey key = new ECKey();
 		wallet.addKey(key);
 		return key.toAddress(params);
@@ -165,7 +186,10 @@ public class ARWallet extends Observable {
 	 * @param password
 	 */
 	public void encrypt(String password) {
-		wallet.encrypt(password);
+		KeyParameter kp = wallet.encrypt(password);
+		if (deterministic.isInitialized()) {
+			deterministic.encrypt(wallet.getKeyCrypter(), kp);
+		}
 	}
 	
 	/**
@@ -182,10 +206,18 @@ public class ARWallet extends Observable {
 	 * @return true if wallet was decrypted, else false
 	 */
 	public boolean decrypt(String password) {
-		KeyParameter decrypingKey = wallet.getKeyCrypter().deriveKey(password);
+		KeyCrypter kc = wallet.getKeyCrypter();
+		KeyParameter decryptingKey = kc.deriveKey(password);
 		try {
-			wallet.decrypt(decrypingKey);
+			wallet.decrypt(decryptingKey);
+			if (deterministic.isInitialized()) {
+				deterministic.decrypt(kc, decryptingKey);
+			}
 		} catch (KeyCrypterException kce) {
+			if (deterministic.isInitialized() && !wallet.isEncrypted() && deterministic.isEncrypted()) {
+				// ensure both parts are encrypted
+				wallet.encrypt(kc, decryptingKey);
+			}
 			return false;
 		}
 		return true;
@@ -275,7 +307,8 @@ public class ARWallet extends Observable {
      */
     private class WalletEventHandler implements WalletEventListener {
     	private int i = 0;
-		@Override
+
+    	@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
 			// see onWalletChanged
@@ -311,9 +344,14 @@ public class ARWallet extends Observable {
 		@Override
 		public void onWalletChanged(Wallet wallet) {
 			System.out.println("wallet changed event" + ++i);
-			System.out.flush();
-			pushBalance();
-			pushHistory();
+			//System.out.flush();
+			
+			if (deterministic.isInitialized() && peerGroup.getMostCommonChainHeight() - chain.getBestChainHeight() < 3) {
+				System.out.println("ensure keys");
+				deterministic.ensureFreeKeys();
+				pushBalance();
+				pushHistory();
+			}
 		}
     	
     }

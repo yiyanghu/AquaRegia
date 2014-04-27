@@ -27,6 +27,7 @@ import com.google.bitcoin.crypto.KeyCrypterException;
 
 public class DeterministicExtension implements WalletExtension {
 	
+	private static final String NAME = "org.aquaregia.wallet.deterministic";
 	public static final int KEYLOOKAHEAD = 5;
 	private Seed seed;
 	private Wallet wallet;
@@ -34,14 +35,18 @@ public class DeterministicExtension implements WalletExtension {
 	private int sequenceNum;
 	private boolean initialized = false;
 
+	public static String getExtensionIDStatic() {
+		return NAME;
+	}
+	
 	@Override
 	public String getWalletExtensionID() {
-		return "org.aquaregia.wallet.deterministic";
+		return NAME;
 	}
 
 	@Override
 	public boolean isWalletExtensionMandatory() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -62,22 +67,31 @@ public class DeterministicExtension implements WalletExtension {
 	@Override
 	public void deserializeWalletExtension(Wallet containingWallet, byte[] data)
 			throws Exception {
+		try {
 		ByteArrayInputStream bis = new ByteArrayInputStream(data);
 		wallet = containingWallet;
 		
 		ObjectInputStream ois = new ObjectInputStream(bis);
 		seed = (Seed) ois.readObject();
+		if (seed == null) {
+			System.out.println("Non-deterministic compatibility mode for current wallet.");
+			return;
+		}
 		seed.generateMasterKeys();
 		
 		ensureFreeKeys();
 		initialized = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean isInitialized() {
 		return initialized;
 	}
 	
-	public void newSeedInit() {
+	public void newSeedInit(Wallet wallet) {
+		this.wallet = wallet;
 		seed = new Seed(Deterministic.randomSeed());
 		// We assume that this is a new not encrypted wallet
 		// Besides, we can't encrypt without the password
@@ -92,7 +106,7 @@ public class DeterministicExtension implements WalletExtension {
 	}
 	
 
-	private void ensureFreeKeys() {
+	public void ensureFreeKeys() {
 		Map<ECKey, Boolean> used = new HashMap<ECKey, Boolean>();
 		
 		List<ECKey> allKeys = wallet.getKeys();
@@ -120,7 +134,7 @@ public class DeterministicExtension implements WalletExtension {
 		}
 		
 		int usedIndex = -1;
-		for (int i = usedIndex; i <= usedIndex + KEYLOOKAHEAD; i++) {
+		for (int i = usedIndex+1; i <= usedIndex + KEYLOOKAHEAD; i++) {
 			ECKey candidateKey = getKey(i);
 			ECKey search = wallet.findKeyFromPubKey(candidateKey.getPubKey());
 			if (search != null) {
@@ -132,6 +146,9 @@ public class DeterministicExtension implements WalletExtension {
 					// move the 5 free keys goal post whenever a key is used
 					usedIndex = i;
 				}
+			} else {
+				System.out.printf("adding key number %d\n", i);
+				wallet.addKey(candidateKey);
 			}
 		}
 		
@@ -166,7 +183,7 @@ public class DeterministicExtension implements WalletExtension {
 	}
 	
 	public String viewMasterPubKey() {
-		return Utils.bytesToHexString(seed.masterPublicKey);
+		return Utils.bytesToHexString(new ECKey(null, seed.masterPublicKey).getPubKey());
 	}
 	
 	public void encrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
@@ -175,6 +192,10 @@ public class DeterministicExtension implements WalletExtension {
 	
 	public boolean decrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
 		return seed.decrypt(keyCrypter, aesKey);
+	}
+	
+	public boolean isEncrypted() {
+		return seed.isEncrypted;
 	}
 	
 	public boolean isWatching() {

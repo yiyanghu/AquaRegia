@@ -192,16 +192,24 @@ public class Controller implements WindowListener {
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)) {
+				if (!mwallet.deterministic.isInitialized()) {
+					noSeed();
+					return;
+				}
 				windowTitle = "Seed";
 				message = "Your seed is ";
-				toDisplay = "default seed should be displayed default seed should be displayed default seed should be displayed default seed should be displayed";
+				toDisplay = mwallet.deterministic.seedMnemonic();
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletMPK)) {
+				if (!mwallet.deterministic.isInitialized()) {
+					noSeed();
+					return;
+				}
 				windowTitle = "Master Public Key";
 				message = "Your master public key is ";
-				toDisplay = "this is your master public key";
+				toDisplay = mwallet.deterministic.viewMasterPubKey();
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
 
@@ -337,6 +345,12 @@ public class Controller implements WindowListener {
 
 		}
 
+		public void noSeed() {
+			JOptionPane.showMessageDialog(view,
+					"Wallet has no seed.", "Error",
+					JOptionPane.WARNING_MESSAGE);
+		}
+		
 		/**
 		 * This function would open a wallet from the user or exit if nothing to
 		 * be opened

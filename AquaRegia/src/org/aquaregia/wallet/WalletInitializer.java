@@ -3,7 +3,10 @@ package org.aquaregia.wallet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.aquaregia.wallet.deterministic.DeterministicExtension;
 
 import com.google.bitcoin.core.BlockChain;
 import com.google.bitcoin.core.CheckpointManager;
@@ -13,6 +16,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.PeerAddress;
 import com.google.bitcoin.core.PeerEventListener;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.WalletExtension;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.net.discovery.DnsDiscovery;
 import com.google.bitcoin.store.BlockStoreException;
@@ -27,6 +31,8 @@ import com.google.common.util.concurrent.Service.State;
  * @author Stephen Halm
  */
 public class WalletInitializer extends WalletAppKit {
+	public boolean newWallet = false;
+	
     public WalletInitializer(NetworkParameters params, File directory, String filePrefix) {
     	super(params, directory, filePrefix);
     }
@@ -76,6 +82,7 @@ public class WalletInitializer extends WalletAppKit {
                 vWallet = new Wallet(params);
                 //vWallet.addKey(new ECKey()); Skip adding first wallet key because deterministic key is needed
                 addWalletExtensions();
+                newWallet = true;
             }
             if (useAutoSave) vWallet.autosaveToFile(vWalletFile, 1, TimeUnit.SECONDS, null);
             // Set up peer addresses or discovery first, so if wallet extensions try to broadcast a transaction
@@ -120,6 +127,11 @@ public class WalletInitializer extends WalletAppKit {
         } finally {
             if (walletStream != null) walletStream.close();
         }
+    }
+
+	@Override
+    protected void addWalletExtensions() throws Exception {
+    	vWallet.addExtension(new DeterministicExtension());
     }
     
     private void installShutdownHook() {
