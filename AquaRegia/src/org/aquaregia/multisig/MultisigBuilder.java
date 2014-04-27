@@ -10,6 +10,7 @@ import java.util.List;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
@@ -194,9 +195,12 @@ public class MultisigBuilder {
 	public void chooseInputs(Wallet wallet, BigInteger amount) {
 		List<Script> allScripts = wallet.getWatchedScripts();
 		for (Script script : allScripts) {
-			byte[] hash = script.getPubKeyHash();
-			if (Arrays.equals(p2sh_hash, hash)); // <-------------
-				//
+			try 
+			{
+				byte[] hash = script.getPubKeyHash();
+				if (Arrays.equals(p2sh_hash, hash)); // <-------------
+					//
+			} catch (ScriptException se) { }
 		}
 	}
 	
