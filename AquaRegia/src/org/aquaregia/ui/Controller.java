@@ -234,7 +234,7 @@ public class Controller implements WindowListener {
 				}
 
 				drawNewPassword(background);
-				JOptionPane.showMessageDialog(null, background,
+				JOptionPane.showMessageDialog(view, background,
 						"Setting Password", JOptionPane.INFORMATION_MESSAGE);
 
 				String nPassword = new String(newPass.getPassword());
@@ -243,15 +243,38 @@ public class Controller implements WindowListener {
 				if (!nPassword.equals(cPassword)) {
 					JOptionPane
 							.showMessageDialog(
-									null,
+									view,
 									"Your confirmed password did not match the new password.",
 									"Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				if (isEncrypted) {
+					if (!mwallet.decrypt(new String(oldPass.getPassword()))) {
+						JOptionPane.showMessageDialog(view,
+								"Your password is incorrect.", "Error",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+				}
+
+				if (nPassword.length() == 0) {
+					if ( !mwallet.isEncrypted()) {
+						JOptionPane
+								.showMessageDialog(view,
+										"Your wallet now is not encrypted.");
+					}
+					else {
+						throw new RuntimeException("The wallet should be decrypted here");
+					}
 				}
 				
-				if (isEncrypted){
-					mwallet.decrypt(new String(oldPass.getPassword()));
+				else {
+					mwallet.encrypt(nPassword);
+					JOptionPane
+					.showMessageDialog(view,
+							"Your wallet has been protected with a new password.");
 				}
-				
 
 			}
 
