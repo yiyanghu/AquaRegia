@@ -228,14 +228,19 @@ public class Controller implements WindowListener {
 
 				else {
 					JLabel msg = new JLabel(
-							"<html><p>Your wallet is not encrypted. Enter the password here.Your wallet is not encrypted. Enter the password here</p></html>");
+							"<html><p>Your wallet is not encrypted. Enter the password here.</p></html>");
 					background.add(msg, "span 4");
 
 				}
 
 				drawNewPassword(background);
-				JOptionPane.showMessageDialog(view, background,
-						"Setting Password", JOptionPane.INFORMATION_MESSAGE);
+				int result = JOptionPane.showConfirmDialog(view, background,
+						"Setting Password", JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.PLAIN_MESSAGE);
+				
+				if (result != JOptionPane.OK_OPTION) {
+					return;
+				}
 
 				String nPassword = new String(newPass.getPassword());
 				String cPassword = new String(confirmPass.getPassword());
@@ -259,21 +264,20 @@ public class Controller implements WindowListener {
 				}
 
 				if (nPassword.length() == 0) {
-					if ( !mwallet.isEncrypted()) {
-						JOptionPane
-								.showMessageDialog(view,
-										"Your wallet now is not encrypted.");
-					}
-					else {
-						throw new RuntimeException("The wallet should be decrypted here");
+					if (!mwallet.isEncrypted()) {
+						JOptionPane.showMessageDialog(view,
+								"Your wallet now is not encrypted.");
+					} else {
+						throw new RuntimeException(
+								"The wallet should be decrypted here");
 					}
 				}
-				
+
 				else {
 					mwallet.encrypt(nPassword);
 					JOptionPane
-					.showMessageDialog(view,
-							"Your wallet has been protected with a new password.");
+							.showMessageDialog(view,
+									"Your wallet has been protected with a new password.");
 				}
 
 			}
@@ -313,7 +317,7 @@ public class Controller implements WindowListener {
 			background.add(msg, BorderLayout.PAGE_START);
 			background.add(info, BorderLayout.CENTER);
 
-			JOptionPane.showMessageDialog(null, background, title,
+			JOptionPane.showMessageDialog(view, background, title,
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 
@@ -433,7 +437,8 @@ public class Controller implements WindowListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// send the address and amount
-
+			String inputPassword = null;
+			boolean isEncrypted = mwallet.isEncrypted();
 			try {
 				BitcoinAmount sendAmount = new BitcoinAmount(
 						BitcoinAmount.B.COIN, view.send.amount.getText());
@@ -450,6 +455,42 @@ public class Controller implements WindowListener {
 						JOptionPane.YES_NO_OPTION);
 				if (okSend != JOptionPane.YES_OPTION)
 					return;
+				if (isEncrypted) {
+
+					// pop up the window to ask the user's password
+					JPanel background = new JPanel();
+					background.setLayout(new MigLayout("wrap 3"));
+					background.setPreferredSize(new Dimension(500, 70));
+
+					JLabel msg = new JLabel(
+							"<html><p>Please enter your password before the transaction.</p></html>");
+					background.add(msg, "span 4");
+
+					JLabel yourPassword = new JLabel("Your password");
+					JPasswordField yPass = new JPasswordField(30);
+					background.add(yourPassword);
+					background.add(yPass);
+
+					int result = JOptionPane
+							.showConfirmDialog(view, background,
+									"Setting Password", JOptionPane.OK_CANCEL_OPTION,
+									JOptionPane.PLAIN_MESSAGE);
+					if (result != JOptionPane.OK_OPTION) {
+						return;
+					}
+					
+
+					inputPassword = new String(yPass.getPassword());
+
+					// if the password is incorrect
+					if (!mwallet.decrypt(inputPassword)) {
+						JOptionPane.showMessageDialog(view,
+								"Your password is incorrect.", "Error",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+
+				}
 				mwallet.simpleSendCoins(sendAmount, address);
 			} catch (NumberFormatException e1) {
 				// error message window for wrong amount format
@@ -468,6 +509,11 @@ public class Controller implements WindowListener {
 						+ missingValue.coins() + " BTC "
 						+ " necessary to complete the transaction.",
 						"Insufficient amount", JOptionPane.ERROR_MESSAGE);
+			} finally {
+				if (isEncrypted && !mwallet.isEncrypted()
+						&& inputPassword != null) {
+					mwallet.encrypt(inputPassword);
+				}
 			}
 		}
 	}
