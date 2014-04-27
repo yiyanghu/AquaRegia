@@ -159,6 +159,10 @@ public class Controller implements WindowListener {
 	// event handler for menu bar
 	public class MenuHandler implements ActionListener {
 
+		private JPasswordField newPass;
+		private JPasswordField confirmPass;
+		private JPasswordField oldPass;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Menu menu = view.menuBar;
@@ -173,14 +177,18 @@ public class Controller implements WindowListener {
 
 			else if (e.getSource().equals(view.menuBar.menuFileOpen)) {
 				Object[] fileAndDir = openWalletFile();
-				if (fileAndDir == null) return;
-				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
+				if (fileAndDir == null)
+					return;
+				mwallet.switchWallet((String) fileAndDir[0],
+						(File) fileAndDir[1]);
 			}
-			
+
 			else if (e.getSource().equals(view.menuBar.menuFileNew)) {
 				Object[] fileAndDir = createWalletFile();
-				if (fileAndDir == null) return;
-				mwallet.switchWallet((String)fileAndDir[0], (File)fileAndDir[1]);
+				if (fileAndDir == null)
+					return;
+				mwallet.switchWallet((String) fileAndDir[0],
+						(File) fileAndDir[1]);
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletSeed)) {
@@ -196,54 +204,55 @@ public class Controller implements WindowListener {
 				toDisplay = "this is your master public key";
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
-			
+
 			else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
-				
-				// start the option pane with a panel 
+
 				JPanel background = new JPanel();
 				background.setLayout(new MigLayout("wrap 4"));
-				background.setPreferredSize(new Dimension(600, 180));
+				background.setPreferredSize(new Dimension(600, 130));
+				boolean isEncrypted = mwallet.isEncrypted();
+
+				if (isEncrypted) {
+
+					// draw the panel with password settings
+					JLabel oldPassword = new JLabel("Old password");
+					oldPass = new JPasswordField(30);
+
+					JLabel msg = new JLabel(
+							"<html><p>Your wallet is encrypted. To disable the password, enter an empty new password</p></html>");
+					background.add(msg, "span 4");
+					background.add(oldPassword);
+					background.add(oldPass, "wrap");
+
+				}
+
+				else {
+					JLabel msg = new JLabel(
+							"<html><p>Your wallet is not encrypted. Enter the password here.Your wallet is not encrypted. Enter the password here</p></html>");
+					background.add(msg, "span 4");
+
+				}
+
+				drawNewPassword(background);
+				JOptionPane.showMessageDialog(null, background,
+						"Setting Password", JOptionPane.INFORMATION_MESSAGE);
+
+				String nPassword = new String(newPass.getPassword());
+				String cPassword = new String(confirmPass.getPassword());
+
+				if (!nPassword.equals(cPassword)) {
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"Your confirmed password did not match the new password.",
+									"Error", JOptionPane.WARNING_MESSAGE);
+				}
 				
-				// draw the panel with password settings
-				JLabel oldPassword = new JLabel("Old password");
-				JPasswordField oldPass = new JPasswordField(30);
-				JLabel newPassword = new JLabel("New password");
-				JPasswordField newPass = new JPasswordField(30);
-				JLabel confirmPassword = new JLabel("Confirm new password");
-				JPasswordField confirmPass = new JPasswordField(30);
+				if (isEncrypted){
+					mwallet.decrypt(new String(oldPass.getPassword()));
+				}
 				
-				
-				JTextArea msg = new JTextArea("Your wallet is encrypted. To change your password, please"
-						+ " type the old one first. To disable wallet encryption, enter an empty new password");
-				
-				/*msg.setPreferredSize(new Dimension(600, 60));*/
-				msg.setOpaque(false);
-				msg.setEditable(false);
-				/*background.add(msg,"cell 0 0 4 1");
-				background.add(oldPassword, "cell 0 4 1 1");
-				background.add(oldPass,"cell 2 4 1 1");
-				background.add(newPassword, "cell 0 5 1 1");
-				background.add(newPass,"cell 2 5 1 1");
-				background.add(confirmPassword,"cell 0 6 1 1");
-				background.add(confirmPass,"cell 2 6 1 1");*/
-				
-				background.add(msg,"span 4 2");
-				background.add(oldPassword);
-				background.add(oldPass,"wrap");
-				background.add(newPassword);
-				background.add(newPass,"wrap");
-				background.add(confirmPassword);
-				background.add(confirmPass,"wrap");
-				
-				JOptionPane.showMessageDialog(null, background, "Setting Password",
-						JOptionPane.INFORMATION_MESSAGE);
-				
-				System.out.printf("%s\n",new String(oldPass.getPassword()));
-				System.out.printf("%s\n",new String(newPass.getPassword()));
-				System.out.printf("%s\n",new String(confirmPass.getPassword()));
-				
-				
-				
+
 			}
 
 		}
@@ -258,7 +267,7 @@ public class Controller implements WindowListener {
 		 *            - the actual data to be displayed
 		 */
 		private void popUpDisplay(String title, String message, String toDisplay) {
-		
+
 			JPanel background = new JPanel();
 			background.setLayout(new BorderLayout());
 			background.setPreferredSize(new Dimension(300, 200));
@@ -285,96 +294,117 @@ public class Controller implements WindowListener {
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 
-	}
+		public void drawNewPassword(JPanel background) {
 
-	/**
-	 * This function would open a wallet from the user or exit if nothing to be
-	 * opened
-	 * 
-	 * @return the name of the opened wallet and directory
-	 */
-	public Object[] openWalletFile() {
-		String wallet = "";
-		File parentDirectory = null;
+			// start the option pane with a panel
 
-		// create a file chooser
-		final JFileChooser fileDialog = new JFileChooser();
-		fileDialog.setCurrentDirectory(new File("."));
-		fileDialog.setAcceptAllFileFilterUsed(false);
+			JLabel newPassword = new JLabel("New password");
+			newPass = new JPasswordField(30);
+			JLabel confirmPassword = new JLabel("Confirm new password");
+			confirmPass = new JPasswordField(30);
 
-		// set file filter
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Bitcoin wallet", new String[] { "wallet" });
-		fileDialog.setFileFilter(filter);
+			background.add(newPassword);
+			background.add(newPass, "wrap");
+			background.add(confirmPassword);
+			background.add(confirmPass, "wrap");
 
-		// in response to a button click:
-		int returnVal = fileDialog.showOpenDialog(view);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			java.io.File file = fileDialog.getSelectedFile();
-			parentDirectory = file.getParentFile();
-			wallet = file.getName();
-
-			if (!wallet.endsWith(".wallet")) {
-				System.out.println("somehow user didn't choose a wallet file");
-			} else {
-				int suffixPosition = wallet.indexOf(".wallet");
-				wallet = wallet.substring(0, suffixPosition);
-			}
-		} else {
-			return null;
 		}
 
-		return new Object[] { wallet, parentDirectory };
-	}
+		/**
+		 * This function would open a wallet from the user or exit if nothing to
+		 * be opened
+		 * 
+		 * @return the name of the opened wallet and directory
+		 */
+		public Object[] openWalletFile() {
+			String wallet = "";
+			File parentDirectory = null;
 
-	
-	public Object[] createWalletFile() {
-		String wallet = "";
-		File parentDirectory = null;
-		
+			// create a file chooser
+			final JFileChooser fileDialog = new JFileChooser();
+			fileDialog.setCurrentDirectory(new File("."));
+			fileDialog.setAcceptAllFileFilterUsed(false);
 
-		// create a file chooser
-		final JFileChooser fileDialog = new JFileChooser();
-		fileDialog.setCurrentDirectory(new File("."));
-		fileDialog.setAcceptAllFileFilterUsed(false);
-		
-		// set file filter
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bitcoin wallet",new String[] {"wallet"});
-		fileDialog.setFileFilter(filter);
-		
-		// in response to a button click:
-		int returnVal = fileDialog.showDialog(view, "Create Wallet");
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			java.io.File file = fileDialog.getSelectedFile();
-			if (file.exists()) {
-				int result = JOptionPane.showConfirmDialog(view, "Do you want to overwrite the file " + file + 
-						"?\nYou will PERMANENTLY lose any bitcoins in the wallet if you don't a backup.", 
-						"Overwrite?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				switch (result) {
+			// set file filter
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"Bitcoin wallet", new String[] { "wallet" });
+			fileDialog.setFileFilter(filter);
+
+			// in response to a button click:
+			int returnVal = fileDialog.showOpenDialog(view);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				java.io.File file = fileDialog.getSelectedFile();
+				parentDirectory = file.getParentFile();
+				wallet = file.getName();
+
+				if (!wallet.endsWith(".wallet")) {
+					System.out
+							.println("somehow user didn't choose a wallet file");
+				} else {
+					int suffixPosition = wallet.indexOf(".wallet");
+					wallet = wallet.substring(0, suffixPosition);
+				}
+			} else {
+				return null;
+			}
+
+			return new Object[] { wallet, parentDirectory };
+		}
+
+		public Object[] createWalletFile() {
+			String wallet = "";
+			File parentDirectory = null;
+
+			// create a file chooser
+			final JFileChooser fileDialog = new JFileChooser();
+			fileDialog.setCurrentDirectory(new File("."));
+			fileDialog.setAcceptAllFileFilterUsed(false);
+
+			// set file filter
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"Bitcoin wallet", new String[] { "wallet" });
+			fileDialog.setFileFilter(filter);
+
+			// in response to a button click:
+			int returnVal = fileDialog.showDialog(view, "Create Wallet");
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				java.io.File file = fileDialog.getSelectedFile();
+				if (file.exists()) {
+					int result = JOptionPane
+							.showConfirmDialog(
+									view,
+									"Do you want to overwrite the file "
+											+ file
+											+ "?\nYou will PERMANENTLY lose any bitcoins in the wallet if you don't a backup.",
+									"Overwrite?", JOptionPane.YES_NO_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+					switch (result) {
 					case JOptionPane.YES_OPTION:
 						file.delete();
 						break;
 					case JOptionPane.NO_OPTION:
 					default:
 						return null;
-					
+
+					}
 				}
-			}
-			parentDirectory = file.getParentFile();
-			wallet = file.getName();
-			
-			if (wallet.endsWith(".wallet")) {
-				int suffixPosition = wallet.indexOf(".wallet");
-				wallet = wallet.substring(0, suffixPosition);
+				parentDirectory = file.getParentFile();
+				wallet = file.getName();
+
+				if (wallet.endsWith(".wallet")) {
+					int suffixPosition = wallet.indexOf(".wallet");
+					wallet = wallet.substring(0, suffixPosition);
+				}
+
+			} else {
+				return null;
 			}
 
-		} else {
-			return null;
+			return new Object[] { wallet, parentDirectory };
 		}
 
-		return new Object[] {wallet, parentDirectory};
 	}
-	
+
 	// event handler for send coin button in the send tab
 	public class SendCoinHandler implements ActionListener {
 		@Override
