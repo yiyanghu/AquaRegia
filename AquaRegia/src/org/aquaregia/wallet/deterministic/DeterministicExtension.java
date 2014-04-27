@@ -1,30 +1,38 @@
 package org.aquaregia.wallet.deterministic;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.Arrays;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.WalletExtension;
+import com.google.bitcoin.crypto.EncryptedPrivateKey;
+import com.google.bitcoin.crypto.KeyCrypter;
+import com.google.bitcoin.crypto.KeyCrypterException;
 
 public class DeterministicExtension implements WalletExtension {
 	
-	private static final int ENCRYPTED = 0x1;
-	private String seed;
-	private boolean isEncrypted;
+	public static final int KEYLOOKAHEAD = 5;
+	private Seed seed;
 	private Wallet wallet;
 	/* Number of keys in wallet (next index to use) */
 	private int sequenceNum;
 	private boolean initialized = false;
-	
-	private byte[] masterPrivateKey;
-	private byte[] masterPublicKey;
 
 	@Override
 	public String getWalletExtensionID() {
@@ -38,35 +46,30 @@ public class DeterministicExtension implements WalletExtension {
 
 	@Override
 	public byte[] serializeWalletExtension() {
-		// handle config flags
-		byte[] cfg = new byte[1];
-		cfg[0] &= isEncrypted ? ENCRYPTED : 0;
-		
-		char[] seedChars = Arrays.copyOf(seed.toCharArray(), 32);
-		byte[] seedBytes = new byte[32];
-		for (int i = 0; i < seedChars.length; i++) {
-			seedBytes[i] = (byte) seedChars[i];
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(seed);
+		} catch (IOException ioe) {
+			// this is very bad
+			ioe.printStackTrace();
+			throw new RuntimeException("we couldn't serialize wallet seed");
 		}
-		return Arrays.concatenate(seedBytes, cfg);
+		
+		return bos.toByteArray();
 	}
 
 	@Override
 	public void deserializeWalletExtension(Wallet containingWallet, byte[] data)
 			throws Exception {
+		ByteArrayInputStream bis = new ByteArrayInputStream(data);
 		wallet = containingWallet;
-		byte[] seedBytes = Arrays.copyOf(data, 32);
-		char[] seedChars = new char[32];
-		for (int i = 0; i < seedBytes.length; i++) {
-			seedChars[i] = (char) seedBytes[i];
-		}
-		seed = new String(seedChars);
 		
-		byte[] cfg = Arrays.copyOfRange(data, 32, data.length);
-		isEncrypted = (cfg[0] & ENCRYPTED) != 0;
+		ObjectInputStream ois = new ObjectInputStream(bis);
+		seed = (Seed) ois.readObject();
+		seed.generateMasterKeys();
 		
-		generateMasterKeys();
-		
-		determineSequenceNumber();
+		ensureFreeKeys();
 		initialized = true;
 	}
 	
@@ -75,13 +78,12 @@ public class DeterministicExtension implements WalletExtension {
 	}
 	
 	public void newSeedInit() {
-		seed = Deterministic.randomSeed();
+		seed = new Seed(Deterministic.randomSeed());
 		// We assume that this is a new not encrypted wallet
 		// Besides, we can't encrypt without the password
 		sequenceNum = 0;
-		isEncrypted = false; 
 		initialized = true;
-		generateMasterKeys();
+		seed.generateMasterKeys();
 		ensureFreeKeys();
 	}
 	
@@ -89,22 +91,16 @@ public class DeterministicExtension implements WalletExtension {
 		// TODO
 	}
 	
-	
-	private void generateMasterKeys() {
-		masterPrivateKey = Deterministic.getMasterPrivateKey(seed.getBytes());
-		masterPublicKey = Deterministic.privateToPublic(masterPrivateKey);
-	}
 
 	private void ensureFreeKeys() {
-		// TODO ensure there are 5 unused keys in wallet
 		Map<ECKey, Boolean> used = new HashMap<ECKey, Boolean>();
 		
 		List<ECKey> allKeys = wallet.getKeys();
+		List<Transaction> txs = wallet.getTransactionsByTime();
 		for (ECKey key : allKeys) {
 			used.put(key, false);
 		}
 		
-		List<Transaction> txs = wallet.getTransactionsByTime();
 		for (Transaction tx : txs) {
 			for (TransactionOutput txo : tx.getOutputs()) {
 				// if (txo.isWatched(wallet)) {
@@ -123,32 +119,132 @@ public class DeterministicExtension implements WalletExtension {
 			}
 		}
 		
-		// TODO
+		int usedIndex = -1;
+		for (int i = usedIndex; i <= usedIndex + KEYLOOKAHEAD; i++) {
+			ECKey candidateKey = getKey(i);
+			ECKey search = wallet.findKeyFromPubKey(candidateKey.getPubKey());
+			if (search != null) {
+				if (search.isPubKeyOnly() && !candidateKey.isPubKeyOnly()) {
+					swap(search, candidateKey);
+				}
+				Boolean isUsed = used.get(search);
+				if (isUsed != null && isUsed) {
+					// move the 5 free keys goal post whenever a key is used
+					usedIndex = i;
+				}
+			}
+		}
 		
 	}
 
-	private void determineSequenceNumber() {
-		// TODO determine next wallet key index
-		
+	public int getSequenceNumber() {
+		return sequenceNum;
+	}
+	
+	private void swap(ECKey original, ECKey replacement) {
+		wallet.removeKey(original);
+		wallet.addKey(replacement);
 	}
 
 	public ECKey nextKey() {
-		// TODO get next key
-		return null;
+		ECKey key = getKey(sequenceNum);
+		sequenceNum++;
+		return key;
+	}
+	
+	private ECKey getKey(int n) {
+		byte[] keyBytes;
+		if (seed.isEncrypted)
+			keyBytes = Deterministic.getPublicKey(seed.masterPublicKey, n);
+		else
+			keyBytes = Deterministic.getPrivateKey(seed.masterPrivateKey, n);
+		return Deterministic.keyConstruct(keyBytes);
 	}
 	
 	public String seedMnemonic() {
-		return Mnemonic.encode(seed);
+		return Mnemonic.encode(seed.seedStr());
 	}
 	
-	public void encrypt(CharSequence pw) {
-		// TODO encrypt seed
+	public String viewMasterPubKey() {
+		return Utils.bytesToHexString(seed.masterPublicKey);
 	}
 	
-	public void decrypt(CharSequence pw) {
-		// TODO decrypt seed
-		// TODO detect pubkey only ECKeys in the wallet & upgrade them
+	public void encrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
+		seed.encrypt(keyCrypter, aesKey);
 	}
 	
+	public boolean decrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
+		return seed.decrypt(keyCrypter, aesKey);
+	}
+	
+	public boolean isWatching() {
+		return seed.isWatching();
+	}
+	
+	private static class Seed implements Serializable {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1686378218914664675L;
+		public byte[] iv;
+		public byte[] data;
+		public byte[] masterPublicKey;
+		transient byte[] masterPrivateKey;
+		public boolean isEncrypted;
+		
+		public Seed(String seed) {
+			set(seed);
+		}
+		
+		// Warning: may exist arbitrarily long in JVM
+		public String seedStr() {
+			return new String(data);
+		}
+		
+		public void set(String seed) {
+			data = seed.getBytes();
+		}
+		
+		private void generateMasterKeys() {
+			masterPrivateKey = Deterministic.getMasterPrivateKey(data);
+			masterPublicKey = Deterministic.privateToPublic(masterPrivateKey);
+		}
+		
+		public boolean isWatching() {
+			return data == null;
+		}
+		
+		public void encrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
+			if (isWatching()) return;
+			try {
+		        EncryptedPrivateKey encryptedPrivateKey = keyCrypter.encrypt(data, aesKey);
+		        iv = encryptedPrivateKey.getInitialisationVector();
+		        data = encryptedPrivateKey.getEncryptedBytes();
+		        isEncrypted = true;
+		        masterPrivateKey = null;
+			} catch (KeyCrypterException e) {
+				e.printStackTrace();
+				throw new RuntimeException("seed encryption failed");
+			}
+		}
+		
+		public boolean decrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
+			if (isWatching()) return false;
+			if (!isEncrypted) return false;
+			try {
+				EncryptedPrivateKey encryptedPrivateKey = new EncryptedPrivateKey(iv, data);
+				byte[] decData = keyCrypter.decrypt(encryptedPrivateKey, aesKey);
+				if (!Arrays.areEqual(Deterministic.getMasterPublicKey(decData), masterPublicKey))
+						return false;
+				data = decData;
+				generateMasterKeys();
+				isEncrypted = false;
+				return true;
+			} catch (KeyCrypterException e) {
+				return false;
+			}
+		}
+	}
 
 }
