@@ -110,6 +110,11 @@ public class DeterministicExtension implements WalletExtension {
 	
 
 	public void ensureFreeKeys() {
+		// handle issue that wallet keychain only accepts encrypted keys
+		// by not expaning address book while encrypted
+		// TODO find way track new public keys properly
+		if (isEncrypted())
+			return;
 		Map<ECKey, Boolean> used = new HashMap<ECKey, Boolean>();
 		
 		List<ECKey> allKeys = wallet.getKeys();
