@@ -32,6 +32,7 @@ import com.google.common.util.concurrent.Service.State;
  */
 public class WalletInitializer extends WalletAppKit {
 	public boolean newWallet = false;
+	private String name;
 	
     public WalletInitializer(NetworkParameters params, File directory, String filePrefix) {
     	super(params, directory, filePrefix);
@@ -50,6 +51,7 @@ public class WalletInitializer extends WalletAppKit {
             File chainFile = new File(directory, filePrefix + ".spvchain");
             boolean chainFileExists = chainFile.exists();
             vWalletFile = new File(directory, filePrefix + ".wallet");
+            name = vWalletFile.getCanonicalPath();
             boolean shouldReplayWallet = vWalletFile.exists() && !chainFileExists;
 
             vStore = new SPVBlockStore(params, chainFile);
@@ -147,4 +149,7 @@ public class WalletInitializer extends WalletAppKit {
         });
     }
 
+    public String getName() {
+    	return name;
+    }
 }

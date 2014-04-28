@@ -10,6 +10,10 @@ package org.aquaregia.wallet;
 public enum ModelUpdate {
 	/** Wait for this to show UI */
 	SHOW,
+	/** 
+	 * o[1] = String: Path to file 
+	 */
+	NAME,
 	/**
 	 * o[1] = BitcoinAmount balance
 	 */

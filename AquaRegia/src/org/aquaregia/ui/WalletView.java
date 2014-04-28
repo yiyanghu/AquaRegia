@@ -58,7 +58,7 @@ public class WalletView extends JFrame implements Observer {
 		addBalance();
 		addTabs();
 
-		setTitle("Aqua Regia");
+		setTitle(Strings.appname);
 		setSize(700, 600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -74,6 +74,11 @@ public class WalletView extends JFrame implements Observer {
 	
 	private void updateBalance(BitcoinAmount amt){
 		balance.setText("Balance  "+amt.coins()+"  BTC");
+	}
+	
+	private void updateName(String name) {
+		String title = Strings.appname + " " + Strings.appversion + " - " + name;
+		this.setTitle(title);
 	}
 
 	private void addTabs() {
@@ -112,6 +117,9 @@ public class WalletView extends JFrame implements Observer {
 			case BALANCE:
 				BitcoinAmount bal = (BitcoinAmount) up[1];
 				updateBalance(bal);
+				break;
+			case NAME:
+				updateName((String) up[1]);
 				break;
 			case EXCHANGE_RATE:
 				break;

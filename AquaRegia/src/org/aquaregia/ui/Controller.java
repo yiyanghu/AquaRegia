@@ -196,6 +196,12 @@ public class Controller implements WindowListener {
 					noSeed();
 					return;
 				}
+				if (mwallet.isEncrypted()) {
+					JOptionPane.showMessageDialog(view,
+							"Wallet seed is encrypted.", "Error",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 				windowTitle = "Seed";
 				message = "Your seed is ";
 				toDisplay = mwallet.deterministic.seedMnemonic();

@@ -77,7 +77,10 @@ public class DeterministicExtension implements WalletExtension {
 			System.out.println("Non-deterministic compatibility mode for current wallet.");
 			return;
 		}
-		seed.generateMasterKeys();
+		System.out.println("Deterministic wallet opened.");
+		
+		if (!isEncrypted())
+			seed.generateMasterKeys();
 		
 		ensureFreeKeys();
 		initialized = true;
@@ -228,6 +231,8 @@ public class DeterministicExtension implements WalletExtension {
 		}
 		
 		private void generateMasterKeys() {
+			if (isEncrypted)
+				throw new RuntimeException("master key generation must be done on unencrypted wallet");
 			masterPrivateKey = Deterministic.getMasterPrivateKey(data);
 			masterPublicKey = Deterministic.privateToPublic(masterPrivateKey);
 		}
@@ -259,8 +264,8 @@ public class DeterministicExtension implements WalletExtension {
 				if (!Arrays.areEqual(Deterministic.getMasterPublicKey(decData), masterPublicKey))
 						return false;
 				data = decData;
-				generateMasterKeys();
 				isEncrypted = false;
+				generateMasterKeys();
 				return true;
 			} catch (KeyCrypterException e) {
 				return false;

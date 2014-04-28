@@ -61,6 +61,7 @@ public class ARWallet extends Observable {
 	private Wallet wallet;
 	private WalletInitializer walletGen;
 	private WalletEventHandler weventh;
+	private String name;
 
 	public DeterministicExtension deterministic;
 
@@ -114,6 +115,7 @@ public class ARWallet extends Observable {
 		walletGen.awaitRunning();
 		
 		// post configuration
+		name = walletGen.getName();
 		peerGroup = walletGen.peerGroup();
 		chain = walletGen.chain();
 		peerGroup.setMaxConnections(12);
@@ -230,6 +232,7 @@ public class ARWallet extends Observable {
 	}
 	
 	private void uiInitData() {
+		pushName();
 		pushBalance();
 		pushHistory();
 		pushOwnedAddresses();
@@ -241,6 +244,15 @@ public class ARWallet extends Observable {
 	
 	private void pushShow() {
 		Object[] update = {ModelUpdate.SHOW};
+		setChanged();
+		notifyObservers(update);
+	}
+	
+	private void pushName() {
+		Object[] update = {
+				ModelUpdate.NAME,
+				name
+			};
 		setChanged();
 		notifyObservers(update);
 	}
@@ -311,13 +323,15 @@ public class ARWallet extends Observable {
     	@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
-			// see onWalletChanged
+    		System.out.println("ensure keys");
+			deterministic.ensureFreeKeys();
 		}
 
 		@Override
 		public void onCoinsSent(Wallet wallet, Transaction tx,
 				BigInteger prevBalance, BigInteger newBalance) {
-			// see onWalletChanged
+			System.out.println("ensure keys");
+			deterministic.ensureFreeKeys();
 		}
 
 		@Override
@@ -327,7 +341,8 @@ public class ARWallet extends Observable {
 
 		@Override
 		public void onReorganize(Wallet wallet) {
-			// see onWalletChanged
+			System.out.println("ensure keys");
+			deterministic.ensureFreeKeys();
 		}
 
 		@Override
@@ -346,12 +361,8 @@ public class ARWallet extends Observable {
 			System.out.println("wallet changed event" + ++i);
 			//System.out.flush();
 			
-			if (deterministic.isInitialized() && peerGroup.getMostCommonChainHeight() - chain.getBestChainHeight() < 3) {
-				System.out.println("ensure keys");
-				deterministic.ensureFreeKeys();
-				pushBalance();
-				pushHistory();
-			}
+			pushBalance();
+			pushHistory();
 		}
     	
     }

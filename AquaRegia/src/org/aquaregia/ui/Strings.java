@@ -6,5 +6,5 @@ package org.aquaregia.ui;
  */
 public class Strings {
 	static public final String appname = "AquaRegia";
-	static public final String appversion = "0.1-beta";
+	static public final String appversion = "0.2.1-beta";
 }
