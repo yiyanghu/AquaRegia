@@ -89,13 +89,13 @@ public class WalletView extends JFrame implements Observer {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		send = new SendTab();
-		tabbedPane.addTab("send", send);
+		tabbedPane.addTab("Send", send);
 	
 		receive = new ReceiveTab();
-		tabbedPane.addTab("receive", receive);
+		tabbedPane.addTab("Receive", receive);
 
 		history = new HistoryTab();
-		tabbedPane.addTab("history", history);
+		tabbedPane.addTab("History", history);
 
 		add(tabbedPane,"grow, push, span");
 

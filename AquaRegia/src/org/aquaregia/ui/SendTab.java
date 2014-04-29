@@ -58,7 +58,7 @@ public class SendTab extends JPanel {
 
 		addLabel(insets, "BTC", 380, 160, 30, 30);
 
-		sendButton = new JButton("send");
+		sendButton = new JButton("Send");
 		sendButton.setBounds(420 + insets.left, 160 + insets.top, 70, 30);
 		this.add(sendButton);
 
