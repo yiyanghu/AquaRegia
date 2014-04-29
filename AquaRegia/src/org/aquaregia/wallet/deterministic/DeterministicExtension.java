@@ -142,7 +142,8 @@ public class DeterministicExtension implements WalletExtension {
 		}
 		
 		int usedIndex = -1;
-		for (int i = usedIndex+1; i <= usedIndex + KEYLOOKAHEAD; i++) {
+		int i;
+		for (i = usedIndex+1; i <= usedIndex + KEYLOOKAHEAD; i++) {
 			ECKey candidateKey = getKey(i);
 			ECKey search = wallet.findKeyFromPubKey(candidateKey.getPubKey());
 			if (search != null) {
@@ -159,6 +160,7 @@ public class DeterministicExtension implements WalletExtension {
 				wallet.addKey(candidateKey);
 			}
 		}
+		sequenceNum = i;
 		
 	}
 
@@ -191,7 +193,7 @@ public class DeterministicExtension implements WalletExtension {
 	}
 	
 	public String viewMasterPubKey() {
-		return Utils.bytesToHexString(new ECKey(null, seed.masterPublicKey).getPubKey());
+		return Utils.bytesToHexString(seed.masterPublicKey);
 	}
 	
 	public void encrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
