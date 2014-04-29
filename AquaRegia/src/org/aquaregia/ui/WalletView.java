@@ -19,6 +19,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.aquaregia.wallet.BitcoinAmount;
 import org.aquaregia.wallet.ModelUpdate;
 import org.aquaregia.wallet.addressbook.AddressBook;
@@ -50,11 +52,11 @@ public class WalletView extends JFrame implements Observer {
 
 	private void initUI() {
 
-		JPanel panel = new JPanel();
+		setLayout(new MigLayout());
 		menuBar = new Menu();
 		this.setJMenuBar(menuBar);
 		
-		panel.setLayout(null);
+
 		addBalance();
 		addTabs();
 
@@ -62,14 +64,14 @@ public class WalletView extends JFrame implements Observer {
 		setSize(700, 600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		
 
 	}
 	
 	private void addBalance(){
 		balance = new JLabel("");
-		Insets insets = this.getInsets();
-		balance.setBounds(15+insets.left,4+insets.top,200,38);
-		add(balance);
+		add(balance,"dock north, gapx 8");
 	}
 	
 	private void updateBalance(BitcoinAmount amt){
@@ -95,7 +97,7 @@ public class WalletView extends JFrame implements Observer {
 		history = new HistoryTab();
 		tabbedPane.addTab("history", history);
 
-		add(tabbedPane);
+		add(tabbedPane,"grow, push, span");
 
 		// enable to use scrolling tabs
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
