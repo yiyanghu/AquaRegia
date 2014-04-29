@@ -110,6 +110,8 @@ public class DeterministicExtension implements WalletExtension {
 	
 
 	public void ensureFreeKeys() {
+		if (seed == null)
+			return;
 		// handle issue that wallet keychain only accepts encrypted keys
 		// by not expanding address book while encrypted
 		// TODO find way track new public keys properly
