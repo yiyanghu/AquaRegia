@@ -50,8 +50,8 @@ public class WalletView extends JFrame implements Observer {
 	public ReceiveTab receive;
 	public HistoryTab history;
 	
-	private static final String UP = "\u25B2";
-	private static final String DOWN = "\u25BC";
+	private static final String UP = "<font color='green'>\u25B2</font>";
+	private static final String DOWN = "<font color='red'>\u25BC</font>";
 
 	// TODO initialize GUI here
 	public WalletView() {
@@ -114,14 +114,14 @@ public class WalletView extends JFrame implements Observer {
 		}
 		String text = "Exchange rate: ";
 		text += symbol + unitsPerBTC.setScale(2, RoundingMode.HALF_EVEN);
-		text += "/" + "BTC";
+		text += "/" + "<b>BTC</b>";
 		if (!exchRate.equals(BigDecimal.ZERO) && diffChar.length() > 0)
 			text += " " + diffChar;
 		if (source != null)
 			text += " (" + source + ")";
 		if (unitsPerBTC.equals(BigDecimal.ZERO))
 			text = "";
-		exchangeRate.setText(text);
+		exchangeRate.setText("<html>"+text+"</html>");
 		exchRate = unitsPerBTC;
 		exchSymbol = symbol;
 		updateBalance(curBalance);

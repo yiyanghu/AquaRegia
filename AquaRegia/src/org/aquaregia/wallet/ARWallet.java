@@ -241,14 +241,20 @@ public class ARWallet extends Observable {
 	}
 	
 	private void uiInitData() {
-		pushName();
-		pushBalance();
-		pushHistory();
-		pushOwnedAddresses();
-		pushExchangeRate();
-		// and the UI is ready
-		pushShow();
-		// TODO complete informing UI about initial state
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				pushName();
+				pushBalance();
+				pushHistory();
+				pushOwnedAddresses();
+				// and the UI is ready
+				pushShow();
+				// TODO complete informing UI about initial state
+			}
+		});
+		
 	}
 	
 	private void pushShow() {

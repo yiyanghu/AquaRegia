@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Executor;
@@ -45,7 +46,19 @@ public class Main {
 	public Main() {
 		Threading.USER_THREAD = runInUIThread;
 		mwallet = new ARWallet();
-		view = new WalletView();
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					view = new WalletView();
+				}
+				
+			});
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
 		mwallet.addObserver(view);
 
 		Controller controller = new Controller();
