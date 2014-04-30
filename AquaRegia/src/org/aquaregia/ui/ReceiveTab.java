@@ -67,7 +67,7 @@ public class ReceiveTab extends JPanel {
 		add(address,"wrap, growx, pushx, align left");
 		
 		sendButton = new JButton("Generate Address");
-		
+
 		add(new JLabel("Description"));
 		
 		add(new JTextField("describe the transaction here"), "wrap, growx, align left");
