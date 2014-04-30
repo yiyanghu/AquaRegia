@@ -62,24 +62,25 @@ public class ReceiveTab extends JPanel {
 		this.setLayout(new MigLayout());
 		Insets insets = this.getInsets();
 		
-		add(new JLabel("Address"),"width 30%");
+		add(new JLabel("Address"),"width 20%");
 
 		address = new JTextField("");
-		add(address,"wrap, growx, align left");
+		add(address,"width 60%, align left");
 		
 		
 		sendButton = new JButton("Generate Address");
 		sendButton.setBounds(500+insets.left,40+insets.top,150,30);
+		add(sendButton,"width 45% ,wrap");
 		
-		add(new JLabel("Description"),"width 30%");
+		add(new JLabel("Description"),"width 20%");
 		
-		add(new JTextField("describe the transaction here"), "wrap, width 60%, align left");
+		add(new JTextField("describe the transaction here"), "wrap, width 80%, align left");
 		
-		add(new JLabel("Amount"),"width 30%");
+		add(new JLabel("Amount"),"width 20%");
 		
-		add(new JTextField(""),"width 30%");
+		add(new JTextField(""),"width 70%");
 		
-		add(new JLabel("BTC"),"wrap");
+		add(new JLabel("BTC"),"wrap, width 10%");
 		
 		addAddressTable(insets);
 	
@@ -100,7 +101,7 @@ public class ReceiveTab extends JPanel {
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		panel.add(tableScrollPane,BorderLayout.CENTER);
-		this.add(panel,"span");
+		this.add(panel," span, center");
 
 	}
 	
