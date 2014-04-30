@@ -1,4 +1,4 @@
-package org.aquaregia.ui;
+package org.aquaregia.ui.components;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,11 +14,11 @@ import javax.swing.text.*;
  * Adapted from: http://tips4java.wordpress.com/2009/11/29/text-prompt/
  * to always hold text
  */
-public class FieldUnits extends JLabel {
+public class TextFieldUnits extends JLabel {
 
 	private JTextComponent component;
 
-	public FieldUnits(String text, JTextComponent component) {
+	public TextFieldUnits(String text, JTextComponent component) {
 		this.component = component;
 
 		setText(text);

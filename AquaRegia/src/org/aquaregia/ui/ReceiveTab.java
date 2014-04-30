@@ -33,6 +33,7 @@ import javax.swing.table.JTableHeader;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.aquaregia.ui.components.TextFieldUnits;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.addressbook.AddressBookEntry;
 
@@ -53,7 +54,7 @@ public class ReceiveTab extends JPanel {
 	public JTable table;
 	private AddressTableModel tableModel;
 	private String[] columnNames;
-	public FieldUnits amountFU;
+	public TextFieldUnits amountFU;
 	
 	/*
 	 * This is the constructor for the receiving tab
@@ -83,7 +84,7 @@ public class ReceiveTab extends JPanel {
 		add(new JLabel("Amount:"));
 		
 		amount = new JTextField("");
-		amountFU = new FieldUnits("", amount);
+		amountFU = new TextFieldUnits("", amount);
 		amountFU.setText("BTC");
 		add(amount,"growx, width :275:275");
 		
