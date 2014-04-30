@@ -65,7 +65,7 @@ public class ReceiveTab extends JPanel {
 		add(new JLabel("Address"),"width 20%");
 
 		address = new JTextField("");
-		add(address,"width 60%, align left");
+		add(address,"width 80%, align left");
 		
 		
 		sendButton = new JButton("Generate Address");
@@ -78,7 +78,7 @@ public class ReceiveTab extends JPanel {
 		
 		add(new JLabel("Amount"),"width 20%");
 		
-		add(new JTextField(""),"width 70%");
+		add(new JTextField(""),"width 80%");
 		
 		add(new JLabel("BTC"),"wrap, width 10%");
 		
@@ -101,7 +101,7 @@ public class ReceiveTab extends JPanel {
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		panel.add(tableScrollPane,BorderLayout.CENTER);
-		this.add(panel," span, center");
+		this.add(panel," span, center, push, grow");
 
 	}
 	
