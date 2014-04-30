@@ -46,6 +46,7 @@ public class Menu extends JMenuBar {
 		menuWalletMPK = createMenuItem(menuWallet,ITEM_PLAIN,"Master Public Key",'M');
 		menuWalletPassword = createMenuItem(menuWallet,ITEM_PLAIN,"Password",'P');
 		menuWalletExportHistory = createMenuItem(menuWallet,ITEM_PLAIN,"Export history",'E');
+		menuWalletExportHistory.setEnabled(false); // <-- not completed feature
 		
 		
 		// create the help menu
@@ -56,7 +57,8 @@ public class Menu extends JMenuBar {
 		// build the help menu options
 		menuHelpAbout = createMenuItem(menuHelp,ITEM_PLAIN,"About",'A');
 		menuHelpWebsite = createMenuItem(menuHelp,ITEM_PLAIN,"Website",'W');
-		
+		menuHelpAbout.setEnabled(false);
+		menuHelpWebsite.setEnabled(false);
 		
 	}
 

@@ -23,6 +23,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.aquaregia.wallet.BitcoinAmount;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
@@ -42,13 +44,10 @@ public class HistoryTab extends JPanel {
 	private String[] columnNames;
 	
 	public HistoryTab(){
-		this.setLayout(null);
-		Insets insets = this.getInsets();
-		addHistoryTable(insets);
+		addHistoryTable();
 	}
 	
-	
-	private void addHistoryTable(Insets insets){
+	private void addHistoryTable(){
 		columnNames = new String[] {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
 		
 		Object[][] data = {};
@@ -57,14 +56,10 @@ public class HistoryTab extends JPanel {
 		model.setDataVector(data,columnNames);
 		table = new JTable(model);		
 				
-		JPanel panel= new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.setBounds(5+insets.left,5+insets.top, 660,520);
+		this.setLayout(new MigLayout());
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		panel.add(tableScrollPane,BorderLayout.CENTER);
-		this.add(panel);
-
+		this.add(tableScrollPane,"push, grow");
 	}
 	
 	public void updateTransactionTable (TransactionHistory history){

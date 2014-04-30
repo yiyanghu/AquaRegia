@@ -61,7 +61,8 @@ public class WalletView extends JFrame implements Observer {
 		addTabs();
 
 		setTitle(Strings.appname);
-		setSize(700, 600);
+		setSize(1024, 768);
+		setMinimumSize(new Dimension(420, 300));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		

@@ -22,10 +22,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -44,11 +46,14 @@ import org.aquaregia.wallet.addressbook.AddressBookEntry;
 
 public class ReceiveTab extends JPanel {
 	
-	private JButton sendButton;
+	private JButton copyButton;
 	public JTextField address;
+	public JTextField description;
+	public JTextField amount;
 	public JTable table;
 	private AddressTableModel tableModel;
 	private String[] columnNames;
+	public FieldUnits amountFU;
 	
 	/*
 	 * This is the constructor for the receiving tab
@@ -59,24 +64,34 @@ public class ReceiveTab extends JPanel {
 	
 	public ReceiveTab() {
 				
-		this.setLayout(new MigLayout());
+		this.setLayout(new MigLayout("","[][][]","[]15[]15[]15[]5[]5[]"));
 		
-		add(new JLabel("Address"));
+		add(new JLabel("Address:"));
 
 		address = new JTextField("");
-		add(address,"wrap, growx, pushx, align left");
+		add(address,"growx, width :580:580");
 		
-		sendButton = new JButton("Generate Address");
+		copyButton = new JButton("Copy");
+		add(copyButton, "wrap");
 
-		add(new JLabel("Description"));
+		add(new JLabel("Description:"));
 		
-		add(new JTextField("describe the transaction here"), "wrap, growx, align left");
+		description = new JTextField("describe the transaction here");
+		description.setEnabled(false); // <- disabled feature
+		add(description, "wrap, growx, width :580:580");
 		
-		add(new JLabel("Amount"));
+		add(new JLabel("Amount:"));
 		
-		add(new JTextField(""),"growx");
+		amount = new JTextField("");
+		amountFU = new FieldUnits("", amount);
+		amountFU.setText("BTC");
+		add(amount,"growx, width :275:275");
 		
-		add(new JLabel("BTC"),"wrap");
+		// we seem to need a 3rd column, push an invisible JLabel
+		add(new JLabel(),"pushx, growx, align left, wrap");
+
+		add(new JSeparator(SwingConstants.HORIZONTAL),"growx, span");
+		add(new JLabel("Owned Addresses:"), "align center, span");
 		
 		addAddressTable();
 	
@@ -112,7 +127,7 @@ public class ReceiveTab extends JPanel {
 	}
 	
 	public void addController(Controller controller){
-		sendButton.addActionListener(controller.gKHandler);
+		copyButton.addActionListener(controller.addrCopyHandler);
 		table.getSelectionModel().addListSelectionListener(controller.addressSelectionHandler);
 	}
 	

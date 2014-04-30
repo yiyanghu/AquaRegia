@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -48,13 +51,13 @@ public class Controller implements WindowListener {
 	private ARWallet mwallet;
 	private WalletView view;
 
-	public GenerateKeyHandler gKHandler;
+	public CopyAddressHandler addrCopyHandler;
 	public SendCoinHandler sCHandler;
 	public AddressSelectionHandler addressSelectionHandler;
 	public MenuHandler mHandler;
 
 	public Controller() {
-		gKHandler = new GenerateKeyHandler();
+		addrCopyHandler = new CopyAddressHandler();
 		sCHandler = new SendCoinHandler();
 		addressSelectionHandler = new AddressSelectionHandler();
 		mHandler = new MenuHandler();
@@ -147,11 +150,18 @@ public class Controller implements WindowListener {
 	}
 
 	// event handler for generating new key button
-	public class GenerateKeyHandler implements ActionListener {
+	public class CopyAddressHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			mwallet.addAddress();
+			JTextField addrField = view.receive.address;
+			String address = addrField.getText();
+			addrField.requestFocus();
+			addrField.selectAll();
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
+			Clipboard clipboard = toolkit.getSystemClipboard();
+			StringSelection strSel = new StringSelection(address);
+			clipboard.setContents(strSel, null);
 		}
 
 	}
