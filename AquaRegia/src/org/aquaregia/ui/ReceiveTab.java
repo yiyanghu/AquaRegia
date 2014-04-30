@@ -29,6 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.addressbook.AddressBookEntry;
 
@@ -55,50 +57,34 @@ public class ReceiveTab extends JPanel {
 	 */
 	
 	
-	public ReceiveTab(){
+	public ReceiveTab() {
 				
-		this.setLayout(null);
+		this.setLayout(new MigLayout());
 		Insets insets = this.getInsets();
 		
-		addLabel(insets, "Address", 100, 40, 80, 30);
+		add(new JLabel("Address"),"width 30%");
 
-		address = addTextField(insets,"",200,40,250,30);
+		address = new JTextField("");
+		add(address,"wrap, growx, align left");
 		
 		
 		sendButton = new JButton("Generate Address");
 		sendButton.setBounds(500+insets.left,40+insets.top,150,30);
-		this.add(sendButton);
 		
-		addLabel(insets, "Description", 100, 100, 80, 30);
+		add(new JLabel("Description"),"width 30%");
 		
-		addTextField(insets,"describe the transaction here",200,100,350,30);
+		add(new JTextField("describe the transaction here"), "wrap, width 60%, align left");
 		
-		addLabel(insets, "Amount", 100, 160, 100, 30);
+		add(new JLabel("Amount"),"width 30%");
 		
-		addTextField(insets,"",200,160,160,30);
+		add(new JTextField(""),"width 30%");
 		
-		addLabel(insets, "BTC", 380, 160, 30, 30);
+		add(new JLabel("BTC"),"wrap");
 		
 		addAddressTable(insets);
 	
 	}
 
-	private void addLabel(Insets insets, String name, int left, int top,
-			int width, int height) {
-		JLabel label = new JLabel(name);
-		label.setBounds(left+insets.left,top+insets.top,width,height);
-		this.add(label);
-	}
-	
-	private JTextField addTextField(Insets insets, final String name, int left, int top,
-			int width, int height) {
-		final JTextField text = new JTextField(name);
-		text.setBounds(left+insets.left,top+insets.top,width,height);
-		
-		this.add(text);
-		return text;
-	}
-	
 	private void addAddressTable(Insets insets){
 		columnNames = new String[] {"Description","Address"};
 		
@@ -114,7 +100,7 @@ public class ReceiveTab extends JPanel {
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		panel.add(tableScrollPane,BorderLayout.CENTER);
-		this.add(panel);
+		this.add(panel,"span");
 
 	}
 	
