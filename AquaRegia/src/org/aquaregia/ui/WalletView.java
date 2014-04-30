@@ -6,6 +6,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,6 +40,10 @@ public class WalletView extends JFrame implements Observer {
 	
 
 	private JLabel balance;
+	private JLabel exchangeRate;
+	private String exchSymbol = "";
+	private BigDecimal exchRate = BigDecimal.ZERO;
+	private BitcoinAmount curBalance = new BitcoinAmount(BigInteger.ZERO);
 	public Menu menuBar;
 	public SendTab send;
 	public ReceiveTab receive;
@@ -72,11 +80,34 @@ public class WalletView extends JFrame implements Observer {
 	
 	private void addBalance(){
 		balance = new JLabel("");
-		add(balance,"dock north, gapx 8");
+		add(balance,"");
+		exchangeRate = new JLabel("");
+		add(exchangeRate, "align right, wrap");
 	}
 	
 	private void updateBalance(BitcoinAmount amt){
-		balance.setText("Balance  "+amt.coins()+"  BTC");
+		String text = "Balance  "+amt.coins()+"  BTC";
+		if (!exchRate.equals(BigDecimal.ZERO)) {
+			text += " (" + exchSymbol;
+			text += amt.scale(BitcoinAmount.B.COIN).multiply(exchRate).setScale(2, RoundingMode.HALF_EVEN);
+			text += ")";
+		}
+		curBalance = amt;
+		balance.setText(text);
+	}
+	
+	private void updateExchangeRate(BigDecimal unitsPerBTC, String symbol, String source) {
+		String text = "Exchange rate: ";
+		text += symbol + unitsPerBTC.setScale(2, RoundingMode.HALF_EVEN);
+		text += "/" + "BTC";
+		if (source != null)
+			text += " (" + source + ")";
+		if (unitsPerBTC.equals(BigDecimal.ZERO))
+			text = "";
+		exchangeRate.setText(text);
+		exchRate = unitsPerBTC;
+		exchSymbol = symbol;
+		updateBalance(curBalance);
 	}
 	
 	private void updateName(String name) {
@@ -125,6 +156,10 @@ public class WalletView extends JFrame implements Observer {
 				updateName((String) up[1]);
 				break;
 			case EXCHANGE_RATE:
+				BigDecimal exchangeRate = (BigDecimal) up[1];
+				String symbol = (String) up[2];
+				String source = (String) up[3];
+				updateExchangeRate(exchangeRate, symbol, source);
 				break;
 			case HISTORY:
 				TransactionHistory trans = (TransactionHistory) up[1];

@@ -27,7 +27,7 @@ public enum ModelUpdate {
 	 */
 	OWNED_ADDRESSES,
 	/**
-	 * o[1] = double USD per BTC (100m satoshi)
+	 * o[1] = BigDecimal USD per BTC (100m satoshi), o[2] = currency symbol (String), nullable o[3] source (String)
 	 */
 	EXCHANGE_RATE
 }

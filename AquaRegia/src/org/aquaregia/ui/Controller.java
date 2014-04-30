@@ -156,6 +156,9 @@ public class Controller implements WindowListener {
 		public void actionPerformed(ActionEvent e) {
 			JTextField addrField = view.receive.address;
 			String address = addrField.getText();
+			// do not copy empty string
+			if (address.length() == 0)
+				return;
 			addrField.requestFocus();
 			addrField.selectAll();
 			Toolkit toolkit = Toolkit.getDefaultToolkit();

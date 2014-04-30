@@ -70,6 +70,8 @@ public class ReceiveTab extends JPanel {
 		add(new JLabel("Address:"));
 
 		address = new JTextField("");
+		address.setEditable(false);
+		address.setBackground(Color.WHITE);
 		add(address,"growx, width :580:580");
 		
 		copyButton = new JButton("Copy");

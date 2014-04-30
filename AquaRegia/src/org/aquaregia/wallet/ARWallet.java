@@ -20,6 +20,8 @@ import org.aquaregia.ui.WalletView;
 import org.aquaregia.ui.Strings;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.deterministic.DeterministicExtension;
+import org.aquaregia.wallet.exchange.BitstampUpdater;
+import org.aquaregia.wallet.exchange.ExchangeRateUpdateTask;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -67,6 +69,8 @@ public class ARWallet extends Observable {
 
 	private BlockChain chain;
 	
+	private ExchangeRateUpdateTask exchangeRateTask;
+	
 	/**
 	 * Initialize with default.wallet
 	 */
@@ -79,7 +83,7 @@ public class ARWallet extends Observable {
 	 * @param walletName - open walletName + '.wallet'
 	 */
 	public ARWallet(String walletName) {
-		initWallet(walletName, new File("."));
+		this(walletName, new File("."));
 	}
 	
 	/**
@@ -89,6 +93,11 @@ public class ARWallet extends Observable {
 	 */
 	public ARWallet(String walletName, File parentDirectory) {
 		initWallet(walletName, parentDirectory);
+		initGeneric();
+	}
+	
+	private void initGeneric() {
+		exchangeRateTask = new ExchangeRateUpdateTask(new BitstampUpdater(), new ExchangeHandler());
 	}
 	
 	/**
@@ -285,12 +294,25 @@ public class ARWallet extends Observable {
 	}
 	
 	private void pushExchangeRate() {
-		// TODO not goal for week 0
-		Object[] update = new Object[2];
+		pushExchangeRate(BigDecimal.ZERO, "", "");
+	}
+	
+	private void pushExchangeRate(BigDecimal rate, String symbol, String source) {
+		Object[] update = new Object[4];
 		update[0] = ModelUpdate.EXCHANGE_RATE;
-		update[1] = 425.0; // TODO update proper instead of dummy value
+		update[1] = rate;
+		update[2] = symbol;
+		update[3] = source;
 		setChanged();
 		notifyObservers(update);
+	}
+	
+	public class ExchangeHandler implements ExchangeRateUpdateTask.ExchangeRateHandler {
+		@Override
+		public void update(BigDecimal exchangeRate, String symbol, String source) {
+			// we are in the swing thread already
+			pushExchangeRate(exchangeRate, symbol, source);
+		}
 	}
 	
 	/**

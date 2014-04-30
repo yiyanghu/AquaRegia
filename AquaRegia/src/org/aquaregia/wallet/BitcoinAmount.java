@@ -31,17 +31,21 @@ public class BitcoinAmount extends BigInteger {
 		super(new BigDecimal(s).setScale(base.scale).unscaledValue().toString());
 	}
 	
+	public BigDecimal scale(B base) {
+		return stripTrailingZerosBugFix(new BigDecimal(this, base.scale));
+	}
+	
 	public String coins() {
-		return stripTrailingZerosBugFix(new BigDecimal(this, 8)).toPlainString();
+		return scale(B.COIN).toPlainString();
 	}
 	
 	public String milliCoins() {
-		return stripTrailingZerosBugFix(new BigDecimal(this, 5)).toPlainString();
+		return scale(B.MILLI).toPlainString();
 
 	}
 	
 	public String microCoins() {
-		return stripTrailingZerosBugFix(new BigDecimal(this, 2)).toPlainString();
+		return scale(B.MICRO).toPlainString();
 	}
 	
 	/**
