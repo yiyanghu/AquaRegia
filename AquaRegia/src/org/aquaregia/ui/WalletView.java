@@ -30,6 +30,7 @@ import org.aquaregia.wallet.ModelUpdate;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
+import org.h2.expression.Comparison;
 
 /**
  * Bitcoin wallet GUI window
@@ -48,6 +49,9 @@ public class WalletView extends JFrame implements Observer {
 	public SendTab send;
 	public ReceiveTab receive;
 	public HistoryTab history;
+	
+	private static final String UP = "\u25B2";
+	private static final String DOWN = "\u25BC";
 
 	// TODO initialize GUI here
 	public WalletView() {
@@ -97,9 +101,22 @@ public class WalletView extends JFrame implements Observer {
 	}
 	
 	private void updateExchangeRate(BigDecimal unitsPerBTC, String symbol, String source) {
+		String diffChar = "";
+		switch (unitsPerBTC.compareTo(exchRate)) {
+			case -1:
+				diffChar = DOWN;
+				break;
+			case 1:
+				diffChar = UP;
+				break;
+			default:
+				break;
+		}
 		String text = "Exchange rate: ";
 		text += symbol + unitsPerBTC.setScale(2, RoundingMode.HALF_EVEN);
 		text += "/" + "BTC";
+		if (!exchRate.equals(BigDecimal.ZERO) && diffChar.length() > 0)
+			text += " " + diffChar;
 		if (source != null)
 			text += " (" + source + ")";
 		if (unitsPerBTC.equals(BigDecimal.ZERO))

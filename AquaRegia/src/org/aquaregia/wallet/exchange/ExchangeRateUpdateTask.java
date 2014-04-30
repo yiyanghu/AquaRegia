@@ -28,6 +28,8 @@ public class ExchangeRateUpdateTask {
 				final String symbol = updater.getSymbol();
 				final String source = updater.getSourceName();
 				
+				if (rate == null) return;
+				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
