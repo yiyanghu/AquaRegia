@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -90,7 +91,7 @@ public class WalletView extends JFrame implements Observer {
 	}
 	
 	private void updateBalance(BitcoinAmount amt){
-		String text = "Balance  "+amt.coins()+"  BTC";
+		String text = "Balance:  "+amt.coins()+"  BTC";
 		if (!exchRate.equals(BigDecimal.ZERO)) {
 			text += " (" + exchSymbol;
 			text += amt.scale(BitcoinAmount.B.COIN).multiply(exchRate).setScale(2, RoundingMode.HALF_EVEN);
@@ -122,6 +123,7 @@ public class WalletView extends JFrame implements Observer {
 		if (unitsPerBTC.equals(BigDecimal.ZERO))
 			text = "";
 		exchangeRate.setText("<html>"+text+"</html>");
+		exchangeRate.setToolTipText("Retrieved at: "+ new Date());
 		exchRate = unitsPerBTC;
 		exchSymbol = symbol;
 		updateBalance(curBalance);
