@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -47,16 +48,30 @@ public class HistoryTab extends JPanel {
 		addHistoryTable();
 	}
 	
-	private void addHistoryTable(){
+	private void addHistoryTable()  {
+		this.setLayout(new MigLayout());
+		
 		columnNames = new String[] {"Status","Date","Description","Amount (BTC)","Balance (BTC)"};
 		
 		Object[][] data = {};
 		
 		model = new TransactionHistoryModel();
 		model.setDataVector(data,columnNames);
-		table = new JTable(model);		
+		table = new JTable(model);	
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		TableColumn column = null;
+		for (int i=0; i<4; i++) {
+			column = table.getColumnModel().getColumn(i);
+			if ( i == 0) {
+				column.setPreferredWidth(50);
+			}
+			else {
+				column.setPreferredWidth(150);
+			}
+		}
 				
-		this.setLayout(new MigLayout());
+		
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		this.add(tableScrollPane,"push, grow");

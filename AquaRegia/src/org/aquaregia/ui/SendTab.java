@@ -1,5 +1,6 @@
 package org.aquaregia.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.TextField;
@@ -21,6 +22,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.aquaregia.ui.components.TextFieldUnits;
+
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Draw the send tab
  * 
@@ -32,6 +37,8 @@ public class SendTab extends JPanel {
 	private JButton sendButton;
 	public JTextField address;
 	public JTextField amount;
+	private JTextField description;
+	private TextFieldUnits amountFU;
 
 	/*
 	 * This is the constructor for the sending tab It has three components:
@@ -39,45 +46,31 @@ public class SendTab extends JPanel {
 	 */
 	public SendTab() {
 
-		this.setLayout(null);
-		Insets insets = this.getInsets();
+		this.setLayout(new MigLayout("","[][][]","[]15[]15[]15[]5[]5[]"));
+		add(new JLabel("Address:"));
 
-		addLabel(insets, "Address", 100, 40, 80, 30);
+		address = new JTextField("");
+		address.setBackground(Color.WHITE);
+		add(address,"growx, width :580:580 , wrap");
+		
+		add(new JLabel("Description:"));
+		description = new JTextField("describe the transaction here");
+		description.setEnabled(false); // <- disabled feature
+		add(description, "wrap, growx, width :580:580, wrap");
 
-		address = addTextField(insets, "", 200, 40, 250, 30);
 
-		addLabel(insets, "Description", 100, 100, 80, 30);
-
-		addTextField(insets, "describe the transaction here", 200, 100, 350, 30);
-
-		// creating the amount with textfield
-		// TO-DO: hide the equation for $ if net connecting to the network
-		addLabel(insets, "Amount", 100, 160, 100, 30);
-
-		amount = addTextField(insets, "", 200, 160, 160, 30);
-
-		addLabel(insets, "BTC", 380, 160, 30, 30);
+		add(new JLabel("Amount:"));
+		
+		amount = new JTextField("");
+		amountFU = new TextFieldUnits("", amount);
+		amountFU.setText("BTC");
+		add(amount,"growx, width :275:275, span, split 2");
 
 		sendButton = new JButton("Send");
-		sendButton.setBounds(420 + insets.left, 160 + insets.top, 70, 30);
-		this.add(sendButton);
+		add(sendButton,"");
 
 	}
 
-	private void addLabel(Insets insets, String name, int left, int top,
-			int width, int height) {
-		JLabel label = new JLabel(name);
-		label.setBounds(left + insets.left, top + insets.top, width, height);
-		this.add(label);
-	}
-
-	private JTextField addTextField(Insets insets, final String name, int left,
-			int top, int width, int height) {
-		final JTextField text = new JTextField(name);
-		text.setBounds(left + insets.left, top + insets.top, width, height);
-		this.add(text);
-		return text;
-	}
 
 	public void addController(Controller controller) {
 		sendButton.addActionListener(controller.sCHandler);
