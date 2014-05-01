@@ -13,6 +13,7 @@ import javax.swing.text.*;
  * 
  * Adapted from: http://tips4java.wordpress.com/2009/11/29/text-prompt/
  * to always hold text
+ * @author Stephen Halm
  */
 public class TextFieldUnits extends JLabel {
 

@@ -8,6 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * A periodic exchange rate refresher for any input ExchangeRateUpdater.
+ * @author Stephen Halm
+ */
 public class ExchangeRateUpdateTask {
 
 	final Runnable taskRunner;

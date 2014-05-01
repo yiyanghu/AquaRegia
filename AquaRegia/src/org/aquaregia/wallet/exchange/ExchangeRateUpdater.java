@@ -7,6 +7,11 @@ import java.util.Scanner;
 
 import javax.annotation.Nullable;
 
+/**
+ * Specification to extend for classes that can get exchange rates.
+ * 
+ * @author Stephen Halm
+ */
 public abstract class ExchangeRateUpdater {
 	protected String symbol;
 	protected String source;

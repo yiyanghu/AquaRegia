@@ -5,6 +5,10 @@ import java.util.Map;
 
 import com.json.parsers.*;
 
+/**
+ * Grabs the last price of $/BTC from Bitstamp currency exchange
+ * @author Stephen Halm
+ */
 public class BitstampUpdater extends ExchangeRateUpdater {
 
 	public final static String URL = "https://www.bitstamp.net/api/ticker/";

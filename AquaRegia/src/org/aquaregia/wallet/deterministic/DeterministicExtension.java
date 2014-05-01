@@ -27,6 +27,10 @@ import com.google.bitcoin.crypto.EncryptedPrivateKey;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterException;
 
+/**
+ * BitcoinJ wallet file extension to save deterministic seed and/or master public key
+ * @author Stephen Halm
+ */
 public class DeterministicExtension implements WalletExtension {
 	
     private static final Logger log = LoggerFactory.getLogger(DeterministicExtension.class);
