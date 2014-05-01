@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.Arrays;
 
@@ -26,6 +28,8 @@ import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterException;
 
 public class DeterministicExtension implements WalletExtension {
+	
+    private static final Logger log = LoggerFactory.getLogger(DeterministicExtension.class);
 	
 	private static final String NAME = "org.aquaregia.wallet.deterministic";
 	public static final int KEYLOOKAHEAD = 5;
@@ -74,10 +78,10 @@ public class DeterministicExtension implements WalletExtension {
 		ObjectInputStream ois = new ObjectInputStream(bis);
 		seed = (Seed) ois.readObject();
 		if (seed == null) {
-			System.out.println("Non-deterministic compatibility mode for current wallet.");
+			log.info("Non-deterministic compatibility mode for current wallet.");
 			return;
 		}
-		System.out.println("Deterministic wallet opened.");
+		log.info("Deterministic wallet opened.");
 		
 		if (!isEncrypted())
 			seed.generateMasterKeys();

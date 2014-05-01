@@ -241,20 +241,12 @@ public class ARWallet extends Observable {
 	}
 	
 	private void uiInitData() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				pushName();
-				pushBalance();
-				pushHistory();
-				pushOwnedAddresses();
-				// and the UI is ready
-				pushShow();
-				// TODO complete informing UI about initial state
-			}
-		});
-		
+			pushName();
+			pushBalance();
+			pushHistory();
+			pushOwnedAddresses();
+			// and the UI is ready
+			pushShow();
 	}
 	
 	private void pushShow() {
@@ -331,7 +323,6 @@ public class ARWallet extends Observable {
             // TODO:  update progress bar UI element with new percentage
             // ensure bar is unhidden?
 			// seems to run every 1%. not in UI thread
-            System.out.println(java.awt.EventQueue.isDispatchThread() + "block downloads " + pct + " " + blocksSoFar);
 
         }
 
@@ -346,7 +337,6 @@ public class ARWallet extends Observable {
      * Update UI on network events
      */
     private class WalletEventHandler implements WalletEventListener {
-    	private int i = 0;
 
     	@Override
 		public void onCoinsReceived(Wallet wallet, Transaction tx,
@@ -386,7 +376,6 @@ public class ARWallet extends Observable {
 
 		@Override
 		public void onWalletChanged(Wallet wallet) {
-			System.out.println("wallet changed event" + ++i);
 			//System.out.flush();
 			
 			pushBalance();

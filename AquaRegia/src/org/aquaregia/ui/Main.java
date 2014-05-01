@@ -51,6 +51,15 @@ public class Main {
 				@Override
 				public void run() {
 					view = new WalletView();
+					
+					mwallet.addObserver(view);
+
+					Controller controller = new Controller();
+					controller.addModel(mwallet);
+					controller.addView(view);
+					controller.initModel(INIT_PARAM);
+
+					view.addController(controller);
 				}
 				
 			});
@@ -59,14 +68,6 @@ public class Main {
 			System.exit(1);
 		}
 		
-		mwallet.addObserver(view);
-
-		Controller controller = new Controller();
-		controller.addModel(mwallet);
-		controller.addView(view);
-		controller.initModel(INIT_PARAM);
-
-		view.addController(controller);
 	}
 
 	
