@@ -65,9 +65,9 @@ public class HistoryTab extends JPanel {
 		
 		table.getColumn("Status").setPreferredWidth(100);
 		table.getColumn("Date").setPreferredWidth(230);
-		table.getColumn("Description").setPreferredWidth(300);
-		table.getColumn("Amount (BTC)").setPreferredWidth(100);
-		table.getColumn("Balance (BTC)").setPreferredWidth(100);
+		table.getColumn("Description").setPreferredWidth(310);
+		table.getColumn("Amount (BTC)").setPreferredWidth(140);
+		table.getColumn("Balance (BTC)").setPreferredWidth(140);
 				
 		
 		JScrollPane tableScrollPane=  new JScrollPane(table);
