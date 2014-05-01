@@ -87,7 +87,7 @@ public class WalletView extends JFrame implements Observer {
 		balance = new JLabel("");
 		add(balance,"");
 		exchangeRate = new JLabel("");
-		add(exchangeRate, "align right, wrap");
+		add(exchangeRate, "pushx, align right, wrap");
 	}
 	
 	private void updateBalance(BitcoinAmount amt){
@@ -115,7 +115,7 @@ public class WalletView extends JFrame implements Observer {
 		}
 		String text = "Exchange rate: ";
 		text += symbol + unitsPerBTC.setScale(2, RoundingMode.HALF_EVEN);
-		text += "/" + "<b>BTC</b>";
+		text += "/" + "BTC";
 		if (!exchRate.equals(BigDecimal.ZERO) && diffChar.length() > 0)
 			text += " " + diffChar;
 		if (source != null)

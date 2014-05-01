@@ -17,5 +17,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/quick-json-1.0.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.7.7.jar" sourcepath="lib/slf4j-jdk14-1.7.7-sources.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-all-1.6.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/AquaRegia/lib/swingx-all-1.6.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
