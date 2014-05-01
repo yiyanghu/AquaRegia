@@ -59,20 +59,19 @@ public class HistoryTab extends JPanel {
 		model.setDataVector(data,columnNames);
 		table = new JTable(model);	
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setAutoCreateColumnsFromModel(false);
 		
-		TableColumn column = null;
-		for (int i=0; i<4; i++) {
-			column = table.getColumnModel().getColumn(i);
-			if ( i == 0) {
-				column.setPreferredWidth(50);
-			}
-			else {
-				column.setPreferredWidth(150);
-			}
-		}
+		/**/
+		
+		table.getColumn("Status").setPreferredWidth(100);
+		table.getColumn("Date").setPreferredWidth(230);
+		table.getColumn("Description").setPreferredWidth(300);
+		table.getColumn("Amount (BTC)").setPreferredWidth(100);
+		table.getColumn("Balance (BTC)").setPreferredWidth(100);
 				
 		
 		JScrollPane tableScrollPane=  new JScrollPane(table);
+		
 		table.setFillsViewportHeight(true);
 		this.add(tableScrollPane,"push, grow");
 	}
