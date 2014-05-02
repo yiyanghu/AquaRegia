@@ -1,20 +1,14 @@
 package org.aquaregia.io;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
-import java.net.*;
-import java.util.*;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.*;
 
 /**
- * refer to https://community.oracle.com/thread/1357495?start=0&tstart=0
+ * refer to https://community.oracle.com/thread/1357495?start=0&tstart=0 Exports
+ * the current JTable with transaction history information to CSV format
  * 
- * @author Yiyang
+ * @author Yiyang and Steve
  * 
  */
 
@@ -29,7 +23,8 @@ public class CSVExporter extends Object {
 	/**
 	 * Write the contents of the table to a file
 	 * 
-	 * @param dest
+	 * @param destination
+	 *            of the file storate
 	 */
 	public void store(File dest) {
 		String csvData = "";
@@ -42,6 +37,8 @@ public class CSVExporter extends Object {
 				csvData += "\n";
 		}
 
+		// traverse the contents and add "," between variables while delete
+		// extra "," within
 		for (int i = 0; i < source.getModel().getRowCount(); i++) {
 			for (int x = 0; x < source.getModel().getColumnCount(); x++) {
 				int col = source.convertColumnIndexToView(x);
@@ -64,10 +61,15 @@ public class CSVExporter extends Object {
 
 			}
 		}
-		
+
 		new FileSaverThread(dest, csvData).start();
 	}
 
+	/**
+	 * 
+	 * @param the source to remove the comma from
+	 * @return modified source without extra comma in between
+	 */
 	private String removeAnyCommas(String src) {
 		if (src == null) {
 			return "";
@@ -104,28 +106,27 @@ public class CSVExporter extends Object {
 			} catch (IOException ioe) {
 				success = false;
 			}
-			
+
 			SwingUtilities.invokeLater(new FileSaverStatus(success));
 		} // end run()
 
 		private class FileSaverStatus implements Runnable {
 			private boolean success;
-			
+
 			public FileSaverStatus(boolean success) {
 				this.success = success;
 			}
-			
+
 			@Override
 			public void run() {
 				if (success) {
 					JOptionPane.showMessageDialog(source,
 							"Your file has been saved successfully.",
 							"File saved", JOptionPane.INFORMATION_MESSAGE);
-				
+
 				} else {
 					JOptionPane.showMessageDialog(source,
-							"Error Writing File.\n" + dest
-									+ "\nPerhaps retry",
+							"Error Writing File.\n" + dest + "\nPerhaps retry",
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}

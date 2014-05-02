@@ -1,9 +1,12 @@
 package org.aquaregia.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-
 import javax.swing.*;
+
+/**
+ * Draws all the menu item
+ * @author Yiyang
+ *
+ */
 
 public class Menu extends JMenuBar {
 
@@ -93,8 +96,11 @@ public class Menu extends JMenuBar {
 		return menuItem;
 			
 	}
-
-
+	
+	/**
+	 * Add controller to all the menu items
+	 * @param controller for menu handler
+ 	 */
 	public void addController(Controller controller) {
 		
 		menuFileNew.addActionListener(controller.mHandler);

@@ -1,35 +1,11 @@
 package org.aquaregia.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
 
 import net.miginfocom.swing.MigLayout;
-
-import org.aquaregia.wallet.BitcoinAmount;
-import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
 import org.jdesktop.swingx.JXTable;
@@ -50,6 +26,11 @@ public class HistoryTab extends JPanel {
 	public HistoryTab(){
 		addHistoryTable();
 	}
+	
+	/**
+	 *  the helper function to draw the history tab with status, date, description, 
+	 *  amount, and balance under Miglayout
+	 */
 	
 	private void addHistoryTable()  {
 		this.setLayout(new MigLayout());
