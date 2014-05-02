@@ -43,7 +43,7 @@ import org.jdesktop.swingx.JXTable;
 
 public class HistoryTab extends JPanel {
 	
-	private JXTable table;
+	public JXTable table;
 	private TransactionHistoryModel model;
 	private String[] columnNames;
 	

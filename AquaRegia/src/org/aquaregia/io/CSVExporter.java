@@ -21,60 +21,51 @@ import javax.swing.table.*;
 public class CSVExporter extends Object {
 
 	public JTable source;
-	public File csvFile;
 
 	public CSVExporter(JTable source) {
 		this.source = source;
 	}
 
-	/*
-	 * public CSVExporter(JTable source, boolean isDefault) { super();
-	 * this.source = source; this.isDefault = isDefault; obtainFileName(); }
+	/**
+	 * Write the contents of the table to a file
 	 * 
-	 * private void obtainFileName() { cancelOp = false; FileNameExtensionFilter
-	 * filter = new FileNameExtensionFilter( "Excel format (CSV)", "csv"); }
+	 * @param dest
 	 */
-
-	public void storeTableAsCSV(File target, JTable src) {
+	public void store(File dest) {
 		String csvData = "";
-		int count = src.getModel().getColumnCount();
-		for (int i = 0; i < count - 1; i++) {
-			csvData += src.getModel().getColumnName(i) + ",";
+		int count = source.getModel().getColumnCount();
+		for (int i = 0; i < count; i++) {
+			csvData += source.getModel().getColumnName(i);
+			if (i != count - 1)
+				csvData += ",";
+			else
+				csvData += "\n";
 		}
 
-		csvData += src.getModel().getColumnName(count - 1) + "\n\n";
-
-		for (int i = 0; i < src.getModel().getRowCount(); i++) {
-			for (int x = 0; x < src.getModel().getColumnCount(); x++) {
-				int col = src.convertColumnIndexToView(x);
-				String curVal = (String) src.getModel().getValueAt(i, col);
-
-				if (curVal == null) {
+		for (int i = 0; i < source.getModel().getRowCount(); i++) {
+			for (int x = 0; x < source.getModel().getColumnCount(); x++) {
+				int col = source.convertColumnIndexToView(x);
+				Object cell = source.getModel().getValueAt(i, col);
+				String curVal;
+				if (cell == null) {
 					curVal = "";
+				} else {
+					curVal = cell.toString();
 				}
 
-				csvData = csvData + removeAnyCommas(curVal) + ",";
+				csvData += removeAnyCommas(curVal);
 
-				if (x == src.getModel().getColumnCount() - 1) {
-					csvData = csvData + "\n";
+				if (x == source.getModel().getColumnCount() - 1) {
+					csvData += "\n";
 
+				} else {
+					csvData += ",";
 				}
 
 			}
-
-			try {
-				FileWriter writer = new FileWriter(target);
-				writer.write(csvData);
-				writer.flush();
-				writer.close();
-			} catch (IOException ioe) {
-				JOptionPane.showMessageDialog(source,
-						"Error Writing File.\nFile"
-								+ "\nCheck and try re-exporting",
-						"Export Error", JOptionPane.ERROR_MESSAGE);
-			}
-
 		}
+		
+		new FileSaverThread(dest, csvData).start();
 	}
 
 	private String removeAnyCommas(String src) {
@@ -91,4 +82,53 @@ public class CSVExporter extends Object {
 		return src;
 	}
 
+	private class FileSaverThread extends Thread {
+
+		private File dest;
+		private String data;
+
+		public FileSaverThread(File dest, String data) {
+			this.dest = dest;
+			this.data = data;
+		}
+
+		@Override
+		public void run() {
+			boolean success;
+			try {
+				FileWriter writer = new FileWriter(dest);
+				writer.write(data);
+				writer.flush();
+				writer.close();
+				success = true;
+			} catch (IOException ioe) {
+				success = false;
+			}
+			
+			SwingUtilities.invokeLater(new FileSaverStatus(success));
+		} // end run()
+
+		private class FileSaverStatus implements Runnable {
+			private boolean success;
+			
+			public FileSaverStatus(boolean success) {
+				this.success = success;
+			}
+			
+			@Override
+			public void run() {
+				if (success) {
+					JOptionPane.showMessageDialog(source,
+							"Your file has been saved successfully.",
+							"File saved", JOptionPane.INFORMATION_MESSAGE);
+				
+				} else {
+					JOptionPane.showMessageDialog(source,
+							"Error Writing File.\n" + dest
+									+ "\nPerhaps retry",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
 }
