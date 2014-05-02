@@ -47,6 +47,10 @@ public class BitcoinAmount extends BigInteger {
 		return stripTrailingZerosBugFix(new BigDecimal(this, base.scale));
 	}
 	
+	public String toString(B base) {
+		return scale(base).toPlainString();
+	}
+	
 	public String coins() {
 		return scale(B.COIN).toPlainString();
 	}
