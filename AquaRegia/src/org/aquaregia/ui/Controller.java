@@ -315,6 +315,7 @@ public class Controller implements WindowListener {
 
 			} else if (e.getSource().equals(view.menuBar.menuHelpAbout)) {
 
+					JOptionPane.showMessageDialog(view,"<html><body><p style = 'width: 200px;'>" + Strings.appname+"  "+Strings.appversion + "<br><br>"+ Strings.description+ "</body><html>","About", JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuHelpWebsite)) {
