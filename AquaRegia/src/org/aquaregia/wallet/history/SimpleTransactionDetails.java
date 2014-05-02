@@ -119,9 +119,12 @@ public class SimpleTransactionDetails {
 	private String fromInputsDescribe(List<TransactionInput> txi) {
 		String res = "";
 		boolean first = true;
+		boolean allMine = true;
 		for (TransactionInput in : txi) {
 			try {
 				byte[] pubkey = in.getScriptSig().getPubKey();
+				if (allMine && !wallet.isPubKeyMine(pubkey))
+					allMine = false;
 				if (first) {
 					res += "<" + new Address(params, Utils.sha256hash160(pubkey)).toString();
 					first = false;
@@ -137,6 +140,7 @@ public class SimpleTransactionDetails {
 				break;
 			}
 		}
+		if (allMine) return "";
 		return (res.length() > 0) ? res : "(from [?] unable to decode)";
 	}
 	
@@ -144,14 +148,14 @@ public class SimpleTransactionDetails {
 		String res = "";
 		boolean first = true;
 		for (TransactionOutput out : tx.getOutputs()) {
-			if (out.isMine(wallet)) {
+			if (out.isMine(wallet) && first) {
 				res += "[to self]";
 			}
 			if (first) {
 				res += ">" + out.getScriptPubKey().getToAddress(params).toString();
 				first = false;
 			}
-			else {
+			else if (!out.isMine(wallet)) {
 				res += "+...";
 				break;
 			}

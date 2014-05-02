@@ -84,8 +84,8 @@ public class HistoryTab extends JPanel {
 	
 	private void tableAdjust() {
 		for (int i = 0; i < 5; i++) {
-		if (i != 2)
-			table.packColumn(i, 5);
+			if (i != 2)
+				table.packColumn(i, 5);
 		}
 	}
 	
