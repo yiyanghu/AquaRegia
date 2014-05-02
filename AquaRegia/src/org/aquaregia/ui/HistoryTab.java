@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
@@ -30,6 +32,7 @@ import org.aquaregia.wallet.BitcoinAmount;
 import org.aquaregia.wallet.addressbook.AddressBook;
 import org.aquaregia.wallet.history.SimpleTransactionDetails;
 import org.aquaregia.wallet.history.TransactionHistory;
+import org.jdesktop.swingx.JXTable;
 
 
 /**
@@ -40,7 +43,7 @@ import org.aquaregia.wallet.history.TransactionHistory;
 
 public class HistoryTab extends JPanel {
 	
-	private JTable table;
+	private JXTable table;
 	private TransactionHistoryModel model;
 	private String[] columnNames;
 	
@@ -57,23 +60,33 @@ public class HistoryTab extends JPanel {
 		
 		model = new TransactionHistoryModel();
 		model.setDataVector(data,columnNames);
-		table = new JTable(model);	
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table = new JXTable(model);	
+		table.setSortable(false);
+		table.setHorizontalScrollEnabled(true);
 		table.setAutoCreateColumnsFromModel(false);
+		table.getTableHeader().setReorderingAllowed(false);
 		
-		/**/
+		table.getColumn("Status").setMaxWidth(100);
+		table.getColumn("Date").setMaxWidth(230);
+
+		table.getColumn("Amount (BTC)").setMaxWidth(220);
+		table.getColumn("Balance (BTC)").setMaxWidth(220);
 		
-		table.getColumn("Status").setPreferredWidth(100);
-		table.getColumn("Date").setPreferredWidth(230);
+		table.getColumn("Description").setMinWidth(310);
 		table.getColumn("Description").setPreferredWidth(310);
-		table.getColumn("Amount (BTC)").setPreferredWidth(140);
-		table.getColumn("Balance (BTC)").setPreferredWidth(140);
-				
 		
+		tableAdjust();
 		JScrollPane tableScrollPane=  new JScrollPane(table);
 		
 		table.setFillsViewportHeight(true);
 		this.add(tableScrollPane,"push, grow");
+	}
+	
+	private void tableAdjust() {
+		for (int i = 0; i < 5; i++) {
+		if (i != 2)
+			table.packColumn(i, 5);
+		}
 	}
 	
 	public void updateTransactionTable (TransactionHistory history){
@@ -88,11 +101,10 @@ public class HistoryTab extends JPanel {
 		}
 		
 		model.setDataVector(data, columnNames);
+		tableAdjust();
 	}
-		
-
 	
-	private class TransactionHistoryModel extends DefaultTableModel{
+	private class TransactionHistoryModel extends DefaultTableModel {
 		/**
 		 * 
 		 */
