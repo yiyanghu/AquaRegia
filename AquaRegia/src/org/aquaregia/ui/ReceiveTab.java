@@ -11,6 +11,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -30,6 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -85,7 +88,11 @@ public class ReceiveTab extends JPanel {
 		
 		add(new JLabel("Amount:"));
 		
-		amount = new JTextField("");
+		amount = new JTextField();
+		Document amtDoc = amount.getDocument();
+		if (amtDoc instanceof AbstractDocument) {
+			((AbstractDocument)amtDoc).setDocumentFilter(new Common.DecimalFilter());
+		}
 		amountFU = new TextFieldUnits("", amount);
 		amountFU.setText("BTC");
 		add(amount,"growx, width :275:275");

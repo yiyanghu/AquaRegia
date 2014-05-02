@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 
 import org.aquaregia.ui.components.TextFieldUnits;
 
@@ -62,6 +64,10 @@ public class SendTab extends JPanel {
 		add(new JLabel("Amount:"));
 		
 		amount = new JTextField("");
+		Document amtDoc = amount.getDocument();
+		if (amtDoc instanceof AbstractDocument) {
+			((AbstractDocument)amtDoc).setDocumentFilter(new Common.DecimalFilter());
+		}
 		amountFU = new TextFieldUnits("", amount);
 		amountFU.setText("BTC");
 		add(amount,"growx, width :275:275, span, split 2");

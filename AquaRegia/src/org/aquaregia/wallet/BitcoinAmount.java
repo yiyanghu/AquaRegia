@@ -2,6 +2,7 @@ package org.aquaregia.wallet;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 /**
  * Flexible Bitcoin amount representation
@@ -39,7 +40,7 @@ public class BitcoinAmount extends BigInteger {
 	}
 	
 	public BitcoinAmount(B base, String s) {
-		super(new BigDecimal(s).setScale(base.scale).unscaledValue().toString());
+		super(new BigDecimal(s).setScale(base.scale, RoundingMode.FLOOR).unscaledValue().toString());
 	}
 	
 	public BigDecimal scale(B base) {
