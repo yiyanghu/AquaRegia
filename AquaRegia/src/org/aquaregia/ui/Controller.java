@@ -1,6 +1,7 @@
 package org.aquaregia.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -15,6 +16,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
@@ -265,7 +270,7 @@ public class Controller implements WindowListener {
 				int result = JOptionPane.showConfirmDialog(view, background,
 						"Setting Password", JOptionPane.OK_CANCEL_OPTION,
 						JOptionPane.PLAIN_MESSAGE);
-				
+
 				if (result != JOptionPane.OK_OPTION) {
 					return;
 				}
@@ -307,6 +312,30 @@ public class Controller implements WindowListener {
 							.showMessageDialog(view,
 									"Your wallet has been protected with a new password.");
 				}
+
+			} else if (e.getSource().equals(view.menuBar.menuHelpAbout)) {
+
+			}
+
+			else if (e.getSource().equals(view.menuBar.menuHelpWebsite)) {
+
+				String url = "http://www.aquaregia.org";
+				Desktop desktop = Desktop.isDesktopSupported() ? Desktop
+						.getDesktop() : null;
+				if (desktop != null
+						&& desktop.isSupported(Desktop.Action.BROWSE)) {
+
+					try {
+
+						Desktop.getDesktop().browse(new URL(url).toURI());
+						return;
+						
+					} catch (IOException | URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+
+				}
+				
 
 			}
 
@@ -366,11 +395,10 @@ public class Controller implements WindowListener {
 		}
 
 		public void noSeed() {
-			JOptionPane.showMessageDialog(view,
-					"Wallet has no seed.", "Error",
+			JOptionPane.showMessageDialog(view, "Wallet has no seed.", "Error",
 					JOptionPane.WARNING_MESSAGE);
 		}
-		
+
 		/**
 		 * This function would open a wallet from the user or exit if nothing to
 		 * be opened
@@ -505,14 +533,13 @@ public class Controller implements WindowListener {
 					background.add(yourPassword);
 					background.add(yPass);
 
-					int result = JOptionPane
-							.showConfirmDialog(view, background,
-									"Setting Password", JOptionPane.OK_CANCEL_OPTION,
-									JOptionPane.PLAIN_MESSAGE);
+					int result = JOptionPane.showConfirmDialog(view,
+							background, "Setting Password",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.PLAIN_MESSAGE);
 					if (result != JOptionPane.OK_OPTION) {
 						return;
 					}
-					
 
 					inputPassword = new String(yPass.getPassword());
 

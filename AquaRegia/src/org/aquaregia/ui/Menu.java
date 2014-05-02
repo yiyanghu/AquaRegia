@@ -57,8 +57,7 @@ public class Menu extends JMenuBar {
 		// build the help menu options
 		menuHelpAbout = createMenuItem(menuHelp,ITEM_PLAIN,"About",'A');
 		menuHelpWebsite = createMenuItem(menuHelp,ITEM_PLAIN,"Website",'W');
-		menuHelpAbout.setEnabled(false);
-		menuHelpWebsite.setEnabled(false);
+	
 		
 	}
 
