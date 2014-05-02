@@ -322,20 +322,21 @@ public class Controller implements WindowListener {
 				String url = "http://www.aquaregia.org";
 				Desktop desktop = Desktop.isDesktopSupported() ? Desktop
 						.getDesktop() : null;
-				if (desktop != null
+				/*if (desktop != null
 						&& desktop.isSupported(Desktop.Action.BROWSE)) {
 
 					try {
 
 						Desktop.getDesktop().browse(new URL(url).toURI());
 						return;
-						
+
 					} catch (IOException | URISyntaxException e1) {
 						e1.printStackTrace();
+
 					}
 
-				}
-				
+				}*/
+				popUpDisplay("Website", "Our website is", url);
 
 			}
 
