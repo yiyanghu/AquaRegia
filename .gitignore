@@ -4,3 +4,4 @@ bin/
 .metadata
 *.old
 *.tmp
+AquaRegia/*.csv
