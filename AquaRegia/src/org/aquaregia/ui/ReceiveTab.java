@@ -50,7 +50,8 @@ import org.aquaregia.wallet.addressbook.AddressBookEntry;
 
 public class ReceiveTab extends JPanel {
 	
-	private JButton copyButton;
+	public JButton copyButton;
+	public JButton uriButton;
 	public JTextField address;
 	public JTextField description;
 	public JTextField amount;
@@ -75,7 +76,7 @@ public class ReceiveTab extends JPanel {
 		address = new JTextField("");
 		address.setEditable(false);
 		address.setBackground(Color.WHITE);
-		add(address,"growx, width :580:580");
+		add(address,"growx, width :580:580, span, split 2");
 		
 		copyButton = new JButton("Copy");
 		add(copyButton, "wrap");
@@ -95,7 +96,10 @@ public class ReceiveTab extends JPanel {
 		}
 		amountFU = new TextFieldUnits("", amount);
 		amountFU.setText("BTC");
-		add(amount,"growx, width :275:275");
+		add(amount,"growx, width :275:275, span, split 3");
+		
+		uriButton = new JButton("Copy request link");
+		add(uriButton, "");
 		
 		// we seem to need a 3rd column, push an invisible JLabel
 		add(new JLabel(),"pushx, growx, align left, wrap");
@@ -137,7 +141,8 @@ public class ReceiveTab extends JPanel {
 	}
 	
 	public void addController(Controller controller){
-		copyButton.addActionListener(controller.addrCopyHandler);
+		copyButton.addActionListener(controller.copyHandler);
+		uriButton.addActionListener(controller.copyHandler);
 		table.getSelectionModel().addListSelectionListener(controller.addressSelectionHandler);
 	}
 	

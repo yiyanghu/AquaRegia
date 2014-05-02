@@ -40,6 +40,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.aquaregia.io.BitcoinURI;
 import org.aquaregia.io.CSVExporter;
 import org.aquaregia.wallet.ARWallet;
 import org.aquaregia.wallet.BitcoinAmount;
@@ -58,13 +59,13 @@ public class Controller implements WindowListener {
 	private ARWallet mwallet;
 	private WalletView view;
 
-	public CopyAddressHandler addrCopyHandler;
+	public CopyHandler copyHandler;
 	public SendCoinHandler sCHandler;
 	public AddressSelectionHandler addressSelectionHandler;
 	public MenuHandler mHandler;
 
 	public Controller() {
-		addrCopyHandler = new CopyAddressHandler();
+		copyHandler = new CopyHandler();
 		sCHandler = new SendCoinHandler();
 		addressSelectionHandler = new AddressSelectionHandler();
 		mHandler = new MenuHandler();
@@ -157,20 +158,44 @@ public class Controller implements WindowListener {
 	}
 
 	// event handler for generating new key button
-	public class CopyAddressHandler implements ActionListener {
+	public class CopyHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
 			JTextField addrField = view.receive.address;
 			String address = addrField.getText();
 			// do not copy empty string
 			if (address.length() == 0)
 				return;
+			
+			String copyText = "";
+			if (e.getSource().equals(view.receive.copyButton)) {
+				copyText = address;
+			}
+			else if (e.getSource().equals(view.receive.uriButton)) {
+				String amount = view.receive.amount.getText();
+				boolean useAmount = true;
+				if (amount.length() == 0) useAmount = false;
+				BitcoinAmount amt = null;
+				try {
+					amt = new BitcoinAmount(BitcoinAmount.B.COIN, amount);
+				} catch (Exception exc) {
+					useAmount = false;
+				}
+				BitcoinURI uri;
+				if (useAmount)
+					uri = new BitcoinURI(address, amt);
+				else
+					uri = new BitcoinURI(address);
+				copyText = uri.toString();
+			}
+			
 			addrField.requestFocus();
 			addrField.selectAll();
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
 			Clipboard clipboard = toolkit.getSystemClipboard();
-			StringSelection strSel = new StringSelection(address);
+			StringSelection strSel = new StringSelection(copyText);
 			clipboard.setContents(strSel, null);
 		}
 
