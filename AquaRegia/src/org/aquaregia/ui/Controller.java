@@ -237,6 +237,14 @@ public class Controller implements WindowListener {
 				toDisplay = mwallet.deterministic.viewMasterPubKey();
 				popUpDisplay(windowTitle, message, toDisplay);
 			}
+			
+			else if (e.getSource().equals(view.menuBar.menuWalletExportHistory)) {
+				/*Object[] fileAndDir = openWalletFile();
+				if (fileAndDir == null)
+					return;
+				mwallet.switchWallet((String) fileAndDir[0],
+						(File) fileAndDir[1]);*/
+			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
 
@@ -494,9 +502,6 @@ public class Controller implements WindowListener {
 			return new Object[] { wallet, parentDirectory };
 		}
 		
-		public void toExcel ( JTable table, File file) {
-			
-		}
 
 	}
 
