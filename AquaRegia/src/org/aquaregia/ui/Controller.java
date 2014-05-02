@@ -493,6 +493,10 @@ public class Controller implements WindowListener {
 
 			return new Object[] { wallet, parentDirectory };
 		}
+		
+		public void toExcel ( JTable table, File file) {
+			
+		}
 
 	}
 
