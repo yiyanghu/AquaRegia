@@ -322,7 +322,7 @@ public class Controller implements WindowListener {
 				String url = "http://www.aquaregia.org";
 				Desktop desktop = Desktop.isDesktopSupported() ? Desktop
 						.getDesktop() : null;
-				/*if (desktop != null
+				if (desktop != null
 						&& desktop.isSupported(Desktop.Action.BROWSE)) {
 
 					try {
@@ -335,7 +335,7 @@ public class Controller implements WindowListener {
 
 					}
 
-				}*/
+				}
 				popUpDisplay("Website", "Our website is", url);
 
 			}
