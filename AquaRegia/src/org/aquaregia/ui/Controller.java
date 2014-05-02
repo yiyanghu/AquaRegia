@@ -40,6 +40,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.aquaregia.io.CSVExporter;
 import org.aquaregia.wallet.ARWallet;
 import org.aquaregia.wallet.BitcoinAmount;
 
@@ -203,7 +204,9 @@ public class Controller implements WindowListener {
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuFileNew)) {
-				Object[] fileAndDir = createWalletFile();
+				Object[] fileAndDir = createFile("wallet", "Bitcoin Wallets", 
+						"Create Wallet", "You will PERMANENTLY lose any bitcoins in the "
+								+ "wallet if you don't a backup.");
 				if (fileAndDir == null)
 					return;
 				mwallet.switchWallet((String) fileAndDir[0],
@@ -239,11 +242,12 @@ public class Controller implements WindowListener {
 			}
 			
 			else if (e.getSource().equals(view.menuBar.menuWalletExportHistory)) {
-				/*Object[] fileAndDir = openWalletFile();
+				Object[] fileAndDir = createFile("csv", "CSV Files", "Save History",
+						"Important financial records may be lost");
 				if (fileAndDir == null)
 					return;
-				mwallet.switchWallet((String) fileAndDir[0],
-						(File) fileAndDir[1]);*/
+				File dest = new File((File) fileAndDir[1], ((String) fileAndDir[0])+".csv");
+				new CSVExporter(view.history.table).store(dest);
 			}
 
 			else if (e.getSource().equals(view.menuBar.menuWalletPassword)) {
@@ -450,7 +454,7 @@ public class Controller implements WindowListener {
 			return new Object[] { wallet, parentDirectory };
 		}
 
-		public Object[] createWalletFile() {
+		public Object[] createFile(String extension, String filterName, String action, String overwriteWarning) {
 			String wallet = "";
 			File parentDirectory = null;
 
@@ -461,25 +465,37 @@ public class Controller implements WindowListener {
 
 			// set file filter
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					"Bitcoin wallet", new String[] { "wallet" });
+					filterName, new String[] { extension });
 			fileDialog.setFileFilter(filter);
 
 			// in response to a button click:
-			int returnVal = fileDialog.showDialog(view, "Create Wallet");
+			int returnVal = fileDialog.showDialog(view, action);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				java.io.File file = fileDialog.getSelectedFile();
-				if (file.exists()) {
+				
+				parentDirectory = file.getParentFile();
+				wallet = file.getName();
+
+				if (wallet.endsWith("." + extension)) {
+					int suffixPosition = wallet.indexOf("." + extension);
+					wallet = wallet.substring(0, suffixPosition);
+				}
+				
+				File resFile = new File(parentDirectory, wallet + "." + extension);
+				
+				if (resFile.exists()) {
 					int result = JOptionPane
 							.showConfirmDialog(
 									view,
 									"Do you want to overwrite the file "
-											+ file
-											+ "?\nYou will PERMANENTLY lose any bitcoins in the wallet if you don't a backup.",
+											+ resFile
+											+ "?\n"
+											+ overwriteWarning,
 									"Overwrite?", JOptionPane.YES_NO_OPTION,
 									JOptionPane.WARNING_MESSAGE);
 					switch (result) {
 					case JOptionPane.YES_OPTION:
-						file.delete();
+						resFile.delete();
 						break;
 					case JOptionPane.NO_OPTION:
 					default:
@@ -487,13 +503,7 @@ public class Controller implements WindowListener {
 
 					}
 				}
-				parentDirectory = file.getParentFile();
-				wallet = file.getName();
-
-				if (wallet.endsWith(".wallet")) {
-					int suffixPosition = wallet.indexOf(".wallet");
-					wallet = wallet.substring(0, suffixPosition);
-				}
+				
 
 			} else {
 				return null;
